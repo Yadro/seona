@@ -2,20 +2,45 @@
 import Fraction = require('../../node_modules/fraction.js/fraction');
 //import {Fraction} from 'fraction.js';
 
+
+
+interface MatrixOperation {
+    matrix;
+    operation;
+}
+
 /**
  * Класс для работы с матрицами
  */
 export class Matrix {
+    width: number;
+    height: number;
     matrix: Fraction[][];
 
-    constructor(w, h) {
-        this.matrix = [];
-        for (let i = 0; i < w; i++) {
-            this.matrix[i] = [];
-            for (let j = 0; j < h; j++) {
-                this.matrix[i].push(new Fraction(0));
+    debugMatrix: MatrixOperation[] = [];
+
+    constructor(w, h, matrix?) {
+        this.height = h;
+        this.width = w;
+        if (matrix) {
+            this.matrix = matrix;
+        } else {
+            this.matrix = [];
+            for (let i = 0; i < w; i++) {
+                this.matrix[i] = [];
+                for (let j = 0; j < h; j++) {
+                    this.matrix[i].push(new Fraction(0));
+                }
             }
         }
+    }
+
+    copy() {
+        let matrix = [];
+        this.matrix.forEach((r) => {
+            matrix.push(r.slice());
+        });
+        return new Matrix(matrix[0].length, matrix.length, matrix);
     }
 
     set(pos: number[], value) {
@@ -32,10 +57,13 @@ export class Matrix {
         return this.matrix;
     }
 
-    gauss() {
+    gauss(debug: boolean = false) {
         const mh = this.matrix.length;
         const mw = this.matrix[0].length;
         let tmp;
+        if (debug) {
+            this.debugMatrix = [];
+        }
 
         for (let i = 0; i < mh; i++) {
             let el = this.matrix[i][i];
@@ -43,8 +71,19 @@ export class Matrix {
                 for (let j = i + 1; j < mw; j++) {
                     el = this.matrix[j][i];
                     if (el.n != 0) {
+                        if (debug) {
+                            this.debugMatrix.push({
+                                matrix: null,
+                                operation: `(${i})${arrFractionToStr(this.matrix[i])} + (${j})${arrFractionToStr(this.matrix[j])}`
+                            });
+                        }
+
                         for (let k = 0; k < mw; k++) {
                             this.matrix[i][k].add(this.matrix[j][k]);
+                        }
+
+                        if (debug) {
+                            this.debugMatrix[this.debugMatrix.length - 1].matrix = this.copy();
                         }
                         break;
                     }
@@ -52,9 +91,25 @@ export class Matrix {
             }
             if (el.n != 0) {
                 for (let j = i + 1; j < mh; j++) {
+                    let c = this.matrix[j][i].neg().div(el);
+                    if (c.n == 0) {
+                        break;
+                    }
+
+                    if (debug) {
+                        this.debugMatrix.push({
+                            matrix: null,
+                            operation: `(${j})${arrFractionToStr(this.matrix[j])} + ${c.toFraction()} * (${i})${arrFractionToStr(this.matrix[i])}`
+                        });
+                    }
+
                     for (let k = mw - 1; k >= i; k--) {
-                        tmp = el.inverse().mul(this.matrix[i][k].neg()).mul(this.matrix[j][i]);
+                        tmp = c.mul(this.matrix[i][k]);
                         this.matrix[j][k] = this.matrix[j][k].add(tmp);
+                    }
+
+                    if (debug) {
+                        this.debugMatrix[this.debugMatrix.length - 1].matrix = this.copy();
                     }
                 }
             }
@@ -63,12 +118,31 @@ export class Matrix {
     }
 
     toString() {
+        let buf = '';
         this.matrix.forEach(row => {
             let str = '[';
             row.forEach(el => {
-                str += ' ' + el.toString();
+                str += ' ' + el.toFraction();
             });
-            console.log(str + ']');
-        })
+            buf += str + ']\n';
+        });
+        return buf;
     }
+}
+
+function arrFractionToStr(arr: Fraction[]) {
+    let str = arr.reduce((pr, e) => pr + ", " +e.toFraction());
+    return `[${str}]`;
+}
+
+function copyMatrix(matr) {
+    let matrix = [];
+
+    matr.forEach((row, i) => {
+        matrix.push([]);
+        row.forEach(el => {
+            matrix[i].push(el);
+        });
+    });
+    return matrix;
 }

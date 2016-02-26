@@ -1,4 +1,6 @@
 ///<reference path="../typings/react/react.d.ts"/>
+///<reference path="../typings/react/react-dom.d.ts"/>
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {InputMatrix} from 'components/input_matrix'
@@ -16,12 +18,17 @@ class App extends React.Component<any, AppState> {
     constructor(props) {
         super(props);
         this.state = {
-            matrix: new Matrix(4, 4)
+            matrix: new Matrix(3, 3)
         };
     }
 
     callback(matrix) {
-        console.log(matrix.gauss().toString());
+        let m = matrix.gauss(true);
+        m.debugMatrix.forEach(e => {
+            console.warn(e.operation.toString());
+            console.log(e.matrix.toString());
+        });
+        console.log(m.toString());
         this.setState({matrix: matrix});
     }
 
@@ -35,4 +42,4 @@ class App extends React.Component<any, AppState> {
     }
 }
 
-ReactDOM.render(<App/>, document.querySelector('body'));
+ReactDOM.render(<App/>, document.querySelector('.react'));

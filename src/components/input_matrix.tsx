@@ -1,4 +1,5 @@
 ///<reference path="../../typings/react/react.d.ts"/>
+///<reference path="../../typings/react/react-dom.d.ts"/>
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Fraction = require('../../node_modules/fraction.js/fraction');
@@ -36,9 +37,9 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         super(props);
         //let matrix = props.matrix.get();
         this.state = {
-            matrix: createMatrix(4, 4),
-            width: 4,
-            height: 4
+            matrix: createMatrix(3, 3),
+            width: 3,
+            height: 3
         };
     }
 
@@ -47,8 +48,6 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         let matrix = this.state.matrix;
         let pos = el.split(',');
         const i = +pos[0], j = +pos[1];
-
-        console.log(el, value);
 
         if (pos.length == 2 && matrix[i] != null && matrix[i][j] != null) {
             matrix[i][j] = value;
@@ -97,7 +96,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         return (
             <div>
                 {matrix_comp}
-                <button onClick={this.verify.bind(this)}>verify</button>
+                <button onClick={this.verify.bind(this)}>gauss</button>
             </div>
         )
     }
