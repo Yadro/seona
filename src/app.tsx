@@ -25,7 +25,7 @@ class App extends React.Component<any, AppState> {
     callback(matrix) {
         let m = matrix.gauss(true);
         m.debugMatrix.forEach(e => {
-            console.warn(e.operation.toString());
+            console.info(e.operation.toString());
             console.log(e.matrix.toString());
         });
         console.log(m.toString());

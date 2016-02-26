@@ -20,15 +20,15 @@ export class Matrix {
     debugMatrix: MatrixOperation[] = [];
 
     constructor(w, h, matrix?) {
-        this.height = h;
         this.width = w;
+        this.height = h;
         if (matrix) {
             this.matrix = matrix;
         } else {
             this.matrix = [];
-            for (let i = 0; i < w; i++) {
+            for (let i = 0; i < h; i++) {
                 this.matrix[i] = [];
-                for (let j = 0; j < h; j++) {
+                for (let j = 0; j < w; j++) {
                     this.matrix[i].push(new Fraction(0));
                 }
             }
