@@ -6,11 +6,11 @@ import Fraction = require('../../node_modules/fraction.js/fraction');
 import {Matrix} from "../helper/matrix";
 //import {Fraction} from '../helper/fraction.js.ts';
 
-function createMatrix(w, h) {
+function createMatrix(w: number, h: number) {
     let matrix = [];
-    for (let i = 0; i < w; i++) {
+    for (let i = 0; i < h; i++) {
         matrix[i] = [];
-        for (let j = 0; j < h; j++) {
+        for (let j = 0; j < w; j++) {
             matrix[i].push('');
         }
     }
@@ -24,8 +24,8 @@ interface InputMatrixP {
 
 interface InputMatrixS {
     matrix;
-    width;
-    height;
+    width: number;
+    height: number;
 }
 
 /**
@@ -54,6 +54,22 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             this.setState({matrix});
         }
     }
+
+    setSize(rot: 'width' | 'height') {
+        let obj = {};
+        return (e) => {
+            let size = +e.target.value;
+            if (size > 0 && size <= 16) {
+                obj[rot] = size;
+                if (rot == 'width') {
+                    obj['matrix'] = createMatrix(size, this.state.height);
+                } else {
+                    obj['matrix'] = createMatrix(this.state.width, size);
+                }
+                this.setState(obj);
+            }
+        }
+    };
 
     row_render(row: Fraction[], index) {
         let i = 0;
@@ -95,6 +111,9 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         return (
             <div>
+                size
+                <input type="text" onChange={this.setSize('height').bind(this)}/>x
+                <input type="text" onChange={this.setSize('width').bind(this)}/>
                 {matrix_comp}
                 <button onClick={this.verify.bind(this)}>gauss</button>
             </div>
