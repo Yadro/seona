@@ -13,7 +13,9 @@ let lineStyle = {
 
 let test = [
     [0,0,0],
-    [1,2,0],
+    [0,1,3],
+    [1,2,2],
+    [7,2,10],
     [1,1,1],
     [1,1,10],
 ];
@@ -26,15 +28,7 @@ export class Graph extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        let paper = Snap('#svg');
-
-        let start = [20, 500];
-        drawAxis(paper, start, 300, false, 10);
-        drawAxis(paper, start, -300, true, 10);
-
-        let angle = 300 / 10;
-
-        drawGraphics(paper, start, angle, test);
+        let graph = new GraphC('#svg', [20, 500], 300, 10);
     }
 
     render() {
@@ -47,121 +41,48 @@ export class Graph extends React.Component<any, any> {
     }
 }
 
-
-function drawAxis(paper, start, size, orientVert, count) {
-    let startX = start[0] + .5,
-        startY = start[1] + .5,
-        endX, endY;
-    if (orientVert) {
-        endY = startY + size;
-        endX = startX;
-    } else {
-        endX = startX + size;
-        endY = startY;
-    }
-    endX += .5;
-    endY += .5;
-
-    let line = paper.line(startX, startY, endX, endY);
-    line.attr(lineStyle);
-
-    let angle = size / count;
-
-    for (let i = 0; i < count; i++) {
-        let localX = orientVert ? startX : startX + i * angle;
-        let localY = orientVert ? startY + i * angle : startY;
-
-        if (orientVert) {
-            if (i != 0) {
-                paper.text(localX - 15, localY + 5, ""+i);
-            }
-            paper.line(localX, localY, localX - 5, localY)
-                .attr(lineStyle);
-        } else {
-            paper.text(localX - 5, localY + 20, ""+i);
-            paper.line(localX, localY, localX, localY + 5)
-                .attr(lineStyle);
-        }
-    }
-}
-
-function drawGraphics(paper, start: number[], angle, graph: number[][]) {
-    graph.forEach(equation => {
-        let coord = getCoords(equation);
-
-        paper.line(start[0] + coord[0] * angle, start[1], start[0], start[1] - coord[1] * angle)
-            .attr(lineStyle);
-
-    })
-}
-
-/**
- * Поиск точек пересечения
- * @param equation
- *
- * @example
- * ax_1 + bx_2 = c
- * x_1 = (-bx_2 + c) / a
- * x_2 = (-ax_1 + c) / b
- */
-function getCoords(equation: number[]) {
-    if (equation.length < 3) return;
-
-    /*let result = [];
-    result.push([(-equation[1] + equation[2]) / equation[0], 0]);
-    result.push([0, (-equation[0] + equation[2]) / equation[1]]);
-    return result;*/
-    let a = equation[0],
-        b = equation[1],
-        c = equation[2];
-
-    /*if (a ==0 || b == 0) {
-        return [
-            (-b + c) / a, 1,
-            1, (-a + c) / b
-        ];
-    }
-
-    return [
-        c / a, 0, // = x1, x2 = 0
-        0, c / b    // = x2, x1 = 0
-    ];*/
-
-    return [
-        c / a, // = x1, x2 = 0
-        c / b    // = x2, x1 = 0
-    ];
-}
-
 class GraphC {
     paper;
     start;
     angle;
+    size;
+    count;
 
-    constructor(id) {
-        this.paper = Snap(id);
+    constructor(id, start, size, count) {
+        this.paper = Snap(id || 'svg');
+        this.start = start || [0, 0];
+        this.size = size || 100;
+        this.angle = size / count;
+        this.count = count;
+
+        this.drawAxis();
+        this.drawAxis(true);
+
+        this.drawGraphics(test);
     }
 
-    drawAxis(start, size, orientVert, count) {
-        let paper = this.paper;
+    drawAxis(orientVert?) {
+        let paper = this.paper,
+            size = this.size,
+            count = this.count,
+            angle = this.angle;
+
         let startX = this.start[0] + .5,
-            startY = this.start[1],
+            startY = this.start[1] + .5,
             endX, endY;
 
         if (orientVert) {
-            endY = startY + size;
+            angle *= -1;
+            endY = startY - size;
             endX = startX;
         } else {
             endX = startX + size;
             endY = startY;
         }
-        endX += .5;
 
 
         let line = paper.line(startX, startY, endX, endY);
         line.attr(lineStyle);
-
-        let angle = this.angle;
 
         for (let i = 0; i < count; i++) {
             let localX = orientVert ? startX : startX + i * angle;
@@ -185,23 +106,21 @@ class GraphC {
         let start = this.start,
             angle = this.angle;
 
-
-
         graph.forEach(equation => {
-            let coord = getCoords(equation);
+            let coord = this.getCoords(equation);
             let sign = 1;
             coord = coord.map((e, i) => {
-                if (i == 3) sign = -1;
+                if (i%2) sign = -1;
+                else sign = 1;
                 return start[i % 2] + e * angle * sign;
             });
 
-
-            this.paper.line(start[0] + coord[0] * angle, start[1], start[0], start[1] - coord[1] * angle)
+            this.paper.line(coord[0], coord[1], coord[2], coord[3])
                 .attr(lineStyle);
         })
     }
 
-        /**
+    /**
      * Поиск точек пересечения
      * @param equation
      *
@@ -213,18 +132,23 @@ class GraphC {
     getCoords(equation: number[]) {
         if (equation.length < 3) return;
 
-        /*let result = [];
-         result.push([(-equation[1] + equation[2]) / equation[0], 0]);
-         result.push([0, (-equation[0] + equation[2]) / equation[1]]);
-         return result;*/
         let a = equation[0],
             b = equation[1],
             c = equation[2];
 
-        if (a == 0 || b == 0) {
+        if (a == 0 && b == 0) {
+            return [0, 0, 0, 0];
+        }
+        if (!a) {
             return [
-                (-b + c) / a, 1,
-                1, (-a + c) / b
+                0, c / b,
+                1, c / b
+            ];
+        }
+        if (!b) {
+            return [
+                c / a, 0,
+                c / a, 1,
             ];
         }
 
