@@ -6,6 +6,8 @@ import * as ReactDOM from 'react-dom';
 import {InputMatrix} from 'components/input_matrix'
 import {Matrix} from 'helper/matrix';
 import Fraction = require('../node_modules/fraction.js/fraction');
+import {Graph} from './components/graph';
+
 //import {Fraction} from "helper/fraction.js.ts";
 
 
@@ -33,10 +35,13 @@ class App extends React.Component<any, AppState> {
     }
 
     render() {
+        /*
+         <h1>Just apply Gauss it</h1>
+         <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
+        */
         return (
             <div>
-                <h1>Just apply Gauss it</h1>
-                <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
+                <Graph/>
             </div>
         )
     }
