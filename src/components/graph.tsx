@@ -44,16 +44,16 @@ export class Graph extends React.Component<any, any> {
 class GraphC {
     paper;
     start;
-    angle;
+    segment;
     size;
     count;
 
-    constructor(id, start, size, count) {
+    constructor(id, start, size, segment) {
         this.paper = Snap(id || 'svg');
         this.start = start || [0, 0];
         this.size = size || 100;
-        this.angle = size / count;
-        this.count = count;
+        this.segment = size / segment;
+        this.count = segment;
 
         this.drawAxis();
         this.drawAxis(true);
@@ -65,14 +65,14 @@ class GraphC {
         let paper = this.paper,
             size = this.size,
             count = this.count,
-            angle = this.angle;
+            segm = this.segment;
 
         let startX = this.start[0] + .5,
             startY = this.start[1] + .5,
             endX, endY;
 
         if (orientVert) {
-            angle *= -1;
+            segm *= -1;
             endY = startY - size;
             endX = startX;
         } else {
@@ -85,8 +85,8 @@ class GraphC {
         line.attr(lineStyle);
 
         for (let i = 0; i < count; i++) {
-            let localX = orientVert ? startX : startX + i * angle;
-            let localY = orientVert ? startY + i * angle : startY;
+            let localX = orientVert ? startX : startX + i * segm;
+            let localY = orientVert ? startY + i * segm : startY;
 
             if (orientVert) {
                 if (i != 0) {
@@ -104,14 +104,13 @@ class GraphC {
 
     drawGraphics(graph: number[][]) {
         let start = this.start,
-            angle = this.angle;
+            angle = this.segment;
 
         graph.forEach(equation => {
             let coord = this.getCoords(equation);
             let sign = 1;
             coord = coord.map((e, i) => {
-                if (i%2) sign = -1;
-                else sign = 1;
+                sign = (i % 2) ? -1 : 1; // invert axisY
                 return start[i % 2] + e * angle * sign;
             });
 
