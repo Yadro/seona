@@ -46,7 +46,8 @@ export class Graph extends React.Component<any, any> {
 
 class GraphC {
     lineStyle = {
-        stroke: '#000'
+        stroke: '#000',
+        strokeWidth: 2
     };
     fontAxisY = {
         fontFamily: 'Source Sans Pro',
@@ -172,8 +173,20 @@ class GraphC {
                 return start[i % 2] + e * angle * sign;
             });
 
-            this.paper.line(coord[0], coord[1], coord[2], coord[3])
+            let line = this.paper.line(coord[0], coord[1], coord[2], coord[3])
                 .attr(this.lineStyle);
+
+            this.paper.line(coord[0], coord[1], coord[2], coord[3])
+                .attr({
+                    stroke: '#0f0',
+                    opacity: 0,
+                    strokeWidth: 10
+                })
+                .hover((e) => {
+                    line.attr({stroke: '#f00'});
+                }, (e) => {
+                    line.attr(this.lineStyle);
+                });
         });
     }
 
