@@ -10,6 +10,13 @@ import {Graph} from './components/graph';
 
 //import {Fraction} from "helper/fraction.js.ts";
 
+let test = [
+    [0,0,0],
+    [0,1,3],
+    [1,2,2],
+    [7,2,10],
+    [1,1,1],
+];
 
 interface AppState {
     matrix: Matrix;
@@ -41,7 +48,7 @@ class App extends React.Component<any, AppState> {
         */
         return (
             <div>
-                <Graph/>
+                <Graph matrix={test}/>
             </div>
         )
     }
