@@ -1,9 +1,10 @@
 ///<reference path="../../typings/main.d.ts"/>
+///<reference path="fraction.js.d.ts"/>
 
 
 import Fraction = require('../../node_modules/fraction.js/fraction');
-//import {Fraction} from 'fraction.js';
-
+import {FractionType} from './fraction.js';
+import {arrayHave} from './tools';
 
 
 interface MatrixOperation {
@@ -17,9 +18,9 @@ interface MatrixOperation {
 export class Matrix {
     width: number;
     height: number;
-    matrix: Fraction[][];
+    matrix: FractionType[][];
 
-    debugMatrix: MatrixOperation[] = [];
+    debugMatrix: DebugMatrix;
 
     constructor(w, h, matrix?) {
         this.width = w;
@@ -59,59 +60,70 @@ export class Matrix {
         return this.matrix;
     }
 
-    gauss(debug: boolean = false) {
-        const mh = this.matrix.length;
-        const mw = this.matrix[0].length;
+    gauss(debug: boolean, columns?: number[]) {
+        const sample = columns != null;
+        const height = this.matrix.length;
+        const width = this.matrix[0].length;
         let tmp;
         if (debug) {
-            this.debugMatrix = [];
+            this.debugMatrix = new DebugMatrix();
         }
 
-        for (let i = 0; i < mh; i++) {
+        for (let i = 0; i < height; i++) {
             let el = this.matrix[i][i];
             if (el.n == 0) {
-                for (let j = i + 1; j < mw; j++) {
+                if (debug) {
+                    this.debugMatrix.add(`${i} == 0`);
+                }
+                for (let j = i + 1; j < width; j++) {
                     el = this.matrix[j][i];
                     if (el.n != 0) {
                         if (debug) {
-                            this.debugMatrix.push({
-                                matrix: null,
-                                operation: `(${i})${arrFractionToStr(this.matrix[i])} + (${j})${arrFractionToStr(this.matrix[j])}`
-                            });
+                            this.debugMatrix.add(
+                                `[${i}]${arrFractionToStr(this.matrix[i])}`
+                                + ` + ${arrFractionToStr(this.matrix[j])}[${j}]`);
                         }
 
-                        for (let k = 0; k < mw; k++) {
+                        for (let k = 0; k < width; k++) {
                             this.matrix[i][k].add(this.matrix[j][k]);
                         }
 
                         if (debug) {
-                            this.debugMatrix[this.debugMatrix.length - 1].matrix = this.copy();
+                            this.debugMatrix.past(this.copy());
                         }
                         break;
                     }
                 }
             }
             if (el.n != 0) {
-                for (let j = i + 1; j < mh; j++) {
+                // делим i строку на el
+                if (debug) {
+                    this.debugMatrix.add(`${i} != 0`);
+                }
+                for (let j = 0; j < width; j++) {
+                    this.matrix[i][j] = this.matrix[i][j].div(el);
+                }
+                el = new Fraction(1);
+
+                // делим последующие строки после i-ой так, чтобы в столбце i были нули
+                for (let j = i + 1; j < height; j++) {
                     let c = this.matrix[j][i].neg().div(el);
                     if (c.n == 0) {
                         break;
                     }
 
-                    if (debug) {
-                        this.debugMatrix.push({
-                            matrix: null,
-                            operation: `(${j})${arrFractionToStr(this.matrix[j])} + ${c.toFraction()} * (${i})${arrFractionToStr(this.matrix[i])}`
-                        });
-                    }
+                    if (debug) this.debugMatrix.add(
+                        `[${j}]${arrFractionToStr(this.matrix[j])} + ${c.toFraction()}`
+                        +` * ${arrFractionToStr(this.matrix[i])}[${i}]`
+                    );
 
-                    for (let k = mw - 1; k >= i; k--) {
+                    for (let k = width - 1; k >= i; k--) {
                         tmp = c.mul(this.matrix[i][k]);
                         this.matrix[j][k] = this.matrix[j][k].add(tmp);
                     }
 
                     if (debug) {
-                        this.debugMatrix[this.debugMatrix.length - 1].matrix = this.copy();
+                        this.debugMatrix.past(this.copy());
                     }
                 }
             }
@@ -132,9 +144,44 @@ export class Matrix {
     }
 }
 
-function arrFractionToStr(arr: Fraction[]) {
-    let str = arr.reduce((pr, e) => pr + ", " +e.toFraction());
-    return `[${str}]`;
+
+class DebugMatrix {
+
+    log: {
+        info: string;
+        matrix: Matrix;
+    }[] = [];
+
+    add(info: string, matrix?: Matrix) {
+        let obj;
+        if (matrix) {
+            obj = {
+                info,
+                matrix
+            }
+        } else {
+            obj = {info};
+        }
+        this.log.push(obj);
+    }
+
+    past(m: Matrix) {
+        this.log[this.log.length - 1].matrix = m;
+    }
+
+    print() {
+        this.log.forEach(e => {
+            console.info(e.info.toString());
+            if (e.hasOwnProperty('matrix')) {
+                console.log(e.matrix.toString());
+            }
+        });
+    }
+}
+
+function arrFractionToStr(arr: FractionType[]) {
+    let str = arr.reduce((pr: string, e: FractionType) => pr + ", " + e.toFraction());
+    return `(${str})`;
 }
 
 function copyMatrix(matr) {

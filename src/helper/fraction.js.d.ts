@@ -1,32 +1,34 @@
 
-export declare class Fraction {
+export declare class FractionType {
     "s": number; // знак
     "n": number; // числитель
     "d": number; // знаменатель
+
     constructor(a, b?);
 
-    abs(): Fraction;
-    neg(): Fraction;
-    add(n): Fraction;
-    sub(n): Fraction;
-    mul(n): Fraction;
-    div(n): Fraction;
-    pow(exp): Fraction;
-    mod(n): Fraction;
-    mod(): Fraction;
-    gcd(n): Fraction;
-    lcm(n): Fraction;
-    ceil(places?): Fraction;
-    floor(places?): Fraction;
-    round(places?): Fraction;
-    inverse(): Fraction;
+    abs(): FractionType;
+    neg(): FractionType;
+    add(n): FractionType;
+    sub(n): FractionType;
+    mul(n): FractionType;
+    div(n): FractionType;
+    pow(exp): FractionType;
+    mod(n): FractionType;
+    mod(): FractionType;
+    gcd(n): FractionType;
+    lcm(n): FractionType;
+    ceil(places?): FractionType;
+    floor(places?): FractionType;
+    round(places?): FractionType;
+    inverse(): FractionType;
     equals(n);
     compare(n);
     divisible(n);
     divisible(n);
     toString();
     toLatex(excludeWhole: boolean);
-    toFraction(excludeWhole: boolean);
+    toFraction();
+    toFractionType(excludeWhole: boolean);
     toContinued();
     clone();
 }
