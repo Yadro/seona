@@ -3,18 +3,9 @@
 import * as React from 'react';
 import Fraction = require('../../node_modules/fraction.js/fraction');
 import {Matrix} from "../helper/matrix";
+import {createMatrix} from  '../helper/tools';
 //import {Fraction} from '../helper/fraction.js.ts';
 
-function createMatrix(w: number, h: number) {
-    let matrix = [];
-    for (let i = 0; i < h; i++) {
-        matrix[i] = [];
-        for (let j = 0; j < w; j++) {
-            matrix[i].push('');
-        }
-    }
-    return matrix;
-}
 
 interface InputMatrixP {
     matrix;
@@ -35,11 +26,21 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
     constructor(props) {
         super(props);
         //let matrix = props.matrix.get();
-        this.state = {
-            matrix: createMatrix(3, 3),
-            width: 3,
-            height: 3
-        };
+        let tmp = localStorage.getItem('matrix');
+        if (tmp) {
+            let m = JSON.parse(tmp);
+            this.state = {
+                matrix: m,
+                width: m[0].length,
+                height: m.length
+            };
+        } else {
+            this.state = {
+                matrix: createMatrix(3, 3),
+                width: 3,
+                height: 3
+            };
+        }
     }
 
     onChange(el, e) {
@@ -70,15 +71,10 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         }
     };
 
-    row_render(row: Fraction[], index) {
-        let i = 0;
-        return row.map(el => {
-            return (<input type="text" key={i} value={el} onChange={this.onChange.bind(this, index + ',' + i++)}/>)
-        })
-    }
-
     verify() {
         const {matrix, height, width} = this.state;
+
+        localStorage.setItem('matrix', JSON.stringify(matrix));
 
         let matr = new Matrix(width, height);
         let matrix_ = matr.matrix;
@@ -87,7 +83,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             row.forEach((el, j) => {
                 try {
                     matrix_[i][j] = new Fraction(el);
-                } catch(e) {
+                } catch (e) {
                     console.error(i + " " + j, e);
                 }
             })
@@ -95,6 +91,13 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         matr.matrix = matrix_;
         this.props.callback(matr);
+    }
+
+    row_render(row: Fraction[], index) {
+        let i = 0;
+        return row.map(el => {
+            return (<input type="text" key={i} value={el} onChange={this.onChange.bind(this, index + ',' + i++)}/>)
+        })
     }
 
     render() {
@@ -111,8 +114,8 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         return (
             <div>
                 size
-                <input type="text" onChange={this.setSize('height').bind(this)}/>x
-                <input type="text" onChange={this.setSize('width').bind(this)}/>
+                <input type="text" value={this.state.height} onChange={this.setSize('height').bind(this)}/>x
+                <input type="text" value={this.state.width} onChange={this.setSize('width').bind(this)}/>
                 {matrix_comp}
                 <button onClick={this.verify.bind(this)}>gauss</button>
             </div>
