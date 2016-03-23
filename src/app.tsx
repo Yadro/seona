@@ -6,7 +6,7 @@ import {InputMatrix} from 'components/input_matrix'
 import {Matrix} from 'helper/matrix';
 import Fraction = require('../node_modules/fraction.js/fraction');
 import {Graph} from './components/graph';
-import {Simplex} from './components/simplex'
+import {SimplexC} from './components/simplex'
 //import {Fraction} from "helper/fraction.js.ts";
 
 let test = [
@@ -49,7 +49,7 @@ class App extends React.Component<any, AppState> {
         return (
             <div>
                 <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
-                <Simplex matrix={test}/>
+                <SimplexC matrix={test}/>
             </div>
         )
     }

@@ -1,13 +1,12 @@
 ///<reference path="../../typings/main.d.ts"/>
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
-interface SimplexProps {
+interface SimplexP {
     matrix;
 }
 
-export class Simplex extends React.Component<SimplexProps, any> {
+export class SimplexC extends React.Component<SimplexP, any> {
 
     constructor(props) {
         super(props);

@@ -1,7 +1,6 @@
 ///<reference path="../../typings/main.d.ts"/>
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import Fraction = require('../../node_modules/fraction.js/fraction');
 import {Matrix} from "../helper/matrix";
 //import {Fraction} from '../helper/fraction.js.ts';

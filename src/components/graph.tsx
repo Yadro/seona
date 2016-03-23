@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
-import {GraphC} from "../helper/graphicc";
+import {GraphC} from "../helper/graphc";
 
 let test = [
     [0,0,0],
