@@ -31,8 +31,9 @@ class App extends React.Component<any, AppState> {
     }
 
     callback(matrix) {
-        let m = matrix.gauss(true);
-        m.debugMatrix.print();
+        let m = matrix.gaussSelect(true, [0, 4, 6]);
+        //m.debugMatrix.print();
+        console.log(m.toString());
         this.setState({matrix: matrix});
     }
 

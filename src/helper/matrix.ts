@@ -38,7 +38,7 @@ export class Matrix {
         }
     }
 
-    copy() {
+    clone() {
         let matrix = [];
         this.matrix.forEach((r) => {
             matrix.push(r.slice());
@@ -89,7 +89,7 @@ export class Matrix {
                         }
 
                         if (debug) {
-                            this.debugMatrix.past(this.copy());
+                            this.debugMatrix.past(this.clone());
                         }
                         break;
                     }
@@ -123,7 +123,7 @@ export class Matrix {
                     }
 
                     if (debug) {
-                        this.debugMatrix.past(this.copy());
+                        this.debugMatrix.past(this.clone());
                     }
                 }
             }
@@ -131,16 +131,151 @@ export class Matrix {
         return this;
     }
 
+
+
+    gaussSelect(debug: boolean, columns: number[]) {
+        let rows = [];
+        const height = this.matrix.length;
+        const width = this.matrix[0].length;
+        let tmp;
+        if (debug) {
+            this.debugMatrix = new DebugMatrix();
+        }
+
+        for (let i = 0; i < height; i++) {
+            if (i > columns.length - 1) {
+                break;
+            }
+            let column = columns[i];
+
+            let el = this.matrix[i][column];
+            if (el.n == 0) {
+                for (let j = column + 1; j < width; j++) {
+                    el = this.matrix[j][i];
+                    if (el.n != 0) {
+                        if (debug) {
+                            this.debugMatrix.add(
+                                `[${i}]${arrFractionToStr(this.matrix[i])}`
+                                + ` + ${arrFractionToStr(this.matrix[j])}[${j}]`);
+                        }
+
+                        for (let k = 0; k < width; k++) {
+                            this.matrix[i][k].add(this.matrix[j][k]);
+                        }
+
+                        if (debug) {
+                            this.debugMatrix.past(this.clone());
+                        }
+                        break;
+                    }
+                }
+            }
+            if (el.n != 0) {
+                rows.push(i);
+
+                // делим i строку на el
+                for (let j = 0; j < width; j++) {
+                    this.matrix[i][j] = this.matrix[i][j].div(el);
+                }
+                el = new Fraction(1);
+
+                // делим строки после i-ой так, чтобы в столбце i были нули
+                for (let row = i + 1; row < height; row++) {
+                    let k = this.matrix[row][column].neg().div(el);
+                    if (k.n == 0) {
+                        break;
+                    }
+
+                    if (debug) this.debugMatrix.add(
+                        `[${row}]${arrFractionToStr(this.matrix[row])} + ${k.toFraction()}`
+                        +` * ${arrFractionToStr(this.matrix[i])}[${i}]`
+                    );
+
+                    for (let col = 0; col < width; col++) {
+                        tmp = k.mul(this.matrix[i][col]);
+                        this.matrix[row][col] = this.matrix[row][col].add(tmp);
+                    }
+
+                    if (debug) {
+                        this.debugMatrix.past(this.clone());
+                    }
+                }
+            }
+        }
+
+        this.debugMatrix.add(function() {
+            let msg = rows + ' ' + columns;
+            console.warn(msg);
+        });
+
+        this.log();
+        while (rows.length && columns.length) {
+            let numRow = rows.pop();
+            let numRol = columns.pop();
+            let workRow = this.matrix[numRow];
+
+            console.groupCollapsed(`[${numRow}][${numRol}]`);
+
+            for (let i = 0; i < height; i++) {
+                if (i == numRow || this.matrix[i][numRol].n == 0) {
+                    continue;
+                }
+                let iRow = this.matrix[i];
+                let k = iRow[numRol].div(workRow[numRol]);
+
+                if (debug ) {
+                    console.warn(`[${i}]${arrFractionToStr(iRow)} - ${k}*${arrFractionToStr(workRow)}`);
+                }
+
+                for (var col = 0; col < width; col++) {
+                    iRow[col] = iRow[col].sub(workRow[col].mul(k));
+                }
+
+                if (debug) {
+                    this.log();
+                }
+            }
+            console.groupEnd();
+        }
+        return this;
+    }
+
+    rowAdd(row: number, value: FractionType) {
+        this.matrix[row] = this.matrix[row].map(e => e.add(value));
+    }
+
+    /**
+     * Вычесть строку b из строки a
+     * @param a
+     * @param b
+     */
+    rowSubRow(a: number, b: Fraction[]) {
+        for (var col = 0; col < this.matrix[0].length; col++) {
+            this.matrix[a][col] = this.matrix[a][col].sub(b[col]);
+        }
+    }
+
     toString() {
         let buf = '';
         this.matrix.forEach(row => {
             let str = '[';
             row.forEach(el => {
-                str += ' ' + el.toFraction();
+                str += '\t' + el.toFraction();
             });
             buf += str + ']\n';
         });
         return buf;
+    }
+
+    log() {
+        let m = [];
+        this.matrix.forEach((row, i) => {
+            m.push([]);
+            row.forEach(el => {
+                m[i].push(el.toFraction());
+            });
+        });
+        console.table(m);
     }
 }
 
@@ -148,11 +283,11 @@ export class Matrix {
 class DebugMatrix {
 
     log: {
-        info: string;
+        info: string | Function;
         matrix: Matrix;
     }[] = [];
 
-    add(info: string, matrix?: Matrix) {
+    add(info: string | Function, matrix?: Matrix) {
         let obj;
         if (matrix) {
             obj = {
@@ -171,9 +306,13 @@ class DebugMatrix {
 
     print() {
         this.log.forEach(e => {
-            console.info(e.info.toString());
+            if (typeof e.info == "function") {
+                e.info();
+            } else {
+                console.info(e.info.toString());
+            }
             if (e.hasOwnProperty('matrix')) {
-                console.log(e.matrix.toString());
+                console.log(e.matrix.log());
             }
         });
     }
