@@ -14,6 +14,8 @@ export class GraphC {
         fontFamily: 'Source Sans Pro',
         textAnchor: 'middle'
     };
+    padding = 60;
+
     paper: Snap.Paper;
     sizeSvg = [800, 600];
 
@@ -25,6 +27,7 @@ export class GraphC {
     coords: number[][] = [];
     extremum: number[];
     segment;
+
 
     constructor(id, graphs) {
         this.paper = Snap(id || 'svg');
@@ -39,7 +42,7 @@ export class GraphC {
 
         // определяем размер сегмента
         this.count = extr[5] - extr[4];
-        this.size = Math.min(this.sizeSvg[0], this.sizeSvg[1]);
+        this.size = Math.min(this.sizeSvg[0], this.sizeSvg[1]) - this.padding;
         this.segment = this.size / this.count;
 
         // считаем начало координат
@@ -61,6 +64,10 @@ export class GraphC {
         this.drawGraphics();
     }
 
+    /**
+     * Отрисовка оси координат
+     * @param vert
+     */
     drawAxis(vert?) {
         let paper = this.paper,
             size = this.size,

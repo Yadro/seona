@@ -48,6 +48,7 @@ class App extends React.Component<any, AppState> {
         */
         return (
             <div>
+                <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
                 <Graph matrix={test}/>
             </div>
         )
