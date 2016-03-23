@@ -1,5 +1,4 @@
-///<reference path="../../typings/react/react.d.ts"/>
-///<reference path="../../typings/snapsvg/snapsvg.d.ts"/>
+///<reference path="../../typings/main.d.ts"/>
 
 import * as React from 'react';
 import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';

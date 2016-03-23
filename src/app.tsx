@@ -1,5 +1,4 @@
-///<reference path="../typings/react/react.d.ts"/>
-///<reference path="../typings/react/react-dom.d.ts"/>
+///<reference path="../typings/main.d.ts"/>
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -7,7 +6,7 @@ import {InputMatrix} from 'components/input_matrix'
 import {Matrix} from 'helper/matrix';
 import Fraction = require('../node_modules/fraction.js/fraction');
 import {Graph} from './components/graph';
-
+import {Simplex} from './components/simplex'
 //import {Fraction} from "helper/fraction.js.ts";
 
 let test = [
@@ -45,11 +44,12 @@ class App extends React.Component<any, AppState> {
         /*
          <h1>Just apply Gauss it</h1>
          <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
+         <Graph matrix={test}/>
         */
         return (
             <div>
                 <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
-                <Graph matrix={test}/>
+                <Simplex matrix={test}/>
             </div>
         )
     }

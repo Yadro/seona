@@ -1,4 +1,6 @@
-///<reference path="fraction.js.d.ts"/>
+///<reference path="../../typings/main.d.ts"/>
+
+
 import Fraction = require('../../node_modules/fraction.js/fraction');
 //import {Fraction} from 'fraction.js';
 

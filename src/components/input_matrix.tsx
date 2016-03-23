@@ -1,5 +1,5 @@
-///<reference path="../../typings/react/react.d.ts"/>
-///<reference path="../../typings/react/react-dom.d.ts"/>
+///<reference path="../../typings/main.d.ts"/>
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Fraction = require('../../node_modules/fraction.js/fraction');
