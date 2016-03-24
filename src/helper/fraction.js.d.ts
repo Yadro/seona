@@ -67,6 +67,11 @@ export declare class FractionType {
      * Returns the multiplicative inverse of the actual number (n / d becomes d / n) in order to get the reciprocal
      */
     inverse(): FractionType;
+
+    /**
+     * Check if two numbers are equal
+     * @param n
+     */
     equals(n);
     compare(n);
     divisible(n);
@@ -74,7 +79,7 @@ export declare class FractionType {
     toString();
     toLatex(excludeWhole: boolean);
     toFraction();
-    toFractionType(excludeWhole: boolean);
+    toFraction(excludeWhole: boolean);
     toContinued();
     clone();
 }

@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {InputMatrix} from 'components/input_matrix'
 import {Matrix} from 'helper/matrix';
-import Fraction = require('../node_modules/fraction.js/fraction');
+import Fraction = require('fraction');
 import {Graph} from './components/graph';
 import {SimplexC} from './components/simplex'
 //import {Fraction} from "helper/fraction.js.ts";

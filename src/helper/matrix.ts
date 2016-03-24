@@ -2,7 +2,7 @@
 ///<reference path="fraction.js.d.ts"/>
 
 
-import Fraction = require('../../node_modules/fraction.js/fraction');
+import Fraction = require('fraction');
 import {FractionType} from './fraction.js';
 import {arrayHave} from './tools';
 
@@ -333,4 +333,125 @@ function copyMatrix(matr) {
         });
     });
     return matrix;
+}
+
+export class MatrixM {
+    width: number;
+    height: number;
+    matrix: FractionType[][];
+
+    constructor(matrix: FractionType[][] | number[][]) {
+        if (!matrix[0].length) {
+            throw new Error('matrix is not matrix')
+        }
+        if (typeof matrix[0][0] == "number") {
+            this.matrix = [];
+            for (let i = 0; i < matrix.length; i++) {
+                this.matrix.push([]);
+                for (let j = 0, l = matrix[0].length; j < l; j++) {
+                    this.matrix[i].push(new Fraction(matrix[i][j]));
+                }
+            }
+        } else {
+            //noinspection TypeScriptValidateTypes
+            this.matrix = matrix;
+        }
+        this.height = matrix.length;
+        this.width = matrix[0].length;
+    }
+
+    getRow(row): FractionType[] {
+        return this.matrix[row];
+    }
+
+    getCol(col): FractionType[] {
+        let vec = [];
+        for (var i = 0; i < this.height; i++) {
+            vec.push(this.matrix[i][col]);
+        }
+        return vec;
+    }
+
+    addRow(row: number, vec: FractionType[], k?: FractionType) {
+        if (row >= this.height) {
+            throw new Error('Index out of bounds');
+        }
+        if (vec.length != this.width) {
+            console.warn(`Length are not equal`);
+        }
+
+        if (k) {
+            vec = vec.map(v => v.mul(k));
+        }
+        for (let i = 0, l = Math.min(this.width, vec.length); i < l; i++) {
+            this.matrix[row][i] = this.matrix[row][i].add(vec[i]);
+        }
+    }
+
+    addColumn(col: number, vec: FractionType[], k?: FractionType) {
+        if (col >= this.width) {
+            throw new Error('Index out of bounds');
+        }
+        if (vec.length != this.width) {
+            console.warn(`Length are not equal`);
+        }
+
+        if (k) {
+            vec = vec.map(v => v.mul(k));
+        }
+        for (let i = 0, l = Math.min(this.width, vec.length); i < l; i++) {
+            this.matrix[i][col] = this.matrix[i][col].add(vec[i]);
+        }
+    }
+
+    mulRow(row: number, vec: FractionType[]) {
+        if (row >= this.height) {
+            throw new Error('Index out of bounds');
+        }
+        if (vec.length != this.width) {
+            console.warn(`Length are not equal`);
+        }
+
+        for (let i = 0, l = Math.min(this.width, vec.length); i < l; i++) {
+            this.matrix[row][i] = this.matrix[row][i].mul(vec[i]);
+        }
+    }
+
+    eachRow(row, func: (cur: FractionType, index: number, stop?) => FractionType | number, begin?: number) {
+        let br = false;
+        if (row >= this.height) {
+            throw new Error('Index out of bounds');
+        }
+        function stop() {
+            br = true;
+        }
+
+        for (let i = begin || 0, l = this.height; i < l; i++) {
+            let tmp = func(this.matrix[row][i], i, stop);
+            if (br) {
+                break;
+            } else {
+                if (typeof tmp == "number") {
+                    this.matrix[row][i] = new Fraction(tmp);
+                } else if (tmp instanceof Fraction) {
+                    this.matrix[row][i] = <FractionType>tmp;
+                }
+            }
+        }
+    }
+
+    equals(matrix: MatrixM): boolean {
+        if (this.height != matrix.height || this.width != matrix.width) {
+            return false;
+        }
+        let {width, height} = this;
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                if (!this.matrix[i][j].equals(matrix[i][j])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

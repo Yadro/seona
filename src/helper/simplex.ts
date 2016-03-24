@@ -6,10 +6,17 @@ export class Simplex {
     begin_basis: number[];
     matrix;
 
-    constructor(beginBasis, matrix: Matrix) {
+    head: number[];
+    left: number[];
+
+    /**
+     * @param beginBasis номера столбцов
+     * @param matrix матрица
+     */
+    constructor(beginBasis: number[], matrix: Matrix) {
         this.begin_basis = beginBasis;
         this.matrix = matrix;
-        matrix.gauss(false);
+        matrix.gaussSelect(false, beginBasis);
     }
 
     firstStep() {
