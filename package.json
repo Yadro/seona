@@ -1,0 +1,27 @@
+{
+  "name": "seona",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "fraction": "^0.2.0",
+    "fraction.js": "^3.2.5",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.12.1",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "requirejs": "^2.2.0",
+    "snapsvg": "^0.4.0",
+    "typescript": "^1.8.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
