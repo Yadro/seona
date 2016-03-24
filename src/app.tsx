@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {InputMatrix} from 'components/input_matrix'
-import {Matrix} from 'helper/matrix';
+import {MatrixM} from 'helper/matrix';
 import Fraction = require('fraction');
 import {Graph} from './components/graph';
 import {SimplexC} from './components/simplex'
@@ -18,7 +18,7 @@ let test = [
 ];
 
 interface AppState {
-    matrix: Matrix;
+    matrix: MatrixM;
 }
 
 class App extends React.Component<any, AppState> {
@@ -26,7 +26,7 @@ class App extends React.Component<any, AppState> {
     constructor(props) {
         super(props);
         this.state = {
-            matrix: new Matrix(3, 3)
+            matrix: new MatrixM([[0,0,0],[0,0,0],[0,0,0]])
         };
     }
 

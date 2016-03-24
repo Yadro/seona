@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Fraction = require('../../node_modules/fraction.js/fraction');
-import {Matrix} from "../helper/matrix";
+import {MatrixM} from "../helper/matrix";
 import {createMatrix} from  '../helper/tools';
 //import {Fraction} from '../helper/fraction.js.ts';
 
@@ -76,21 +76,20 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         localStorage.setItem('matrix', JSON.stringify(matrix));
 
-        let matr = new Matrix(width, height);
-        let matrix_ = matr.matrix;
+        let matrix_ = [];
 
         matrix.forEach((row, i) => {
+            matrix_.push([]);
             row.forEach((el, j) => {
                 try {
-                    matrix_[i][j] = new Fraction(el);
+                    matrix_[i].push(new Fraction(el));
                 } catch (e) {
                     console.error(i + " " + j, e);
                 }
             })
         });
 
-        matr.matrix = matrix_;
-        this.props.callback(matr);
+        this.props.callback(new MatrixM(matrix_));
     }
 
     row_render(row: Fraction[], index) {

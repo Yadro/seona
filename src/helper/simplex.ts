@@ -1,4 +1,4 @@
-import {Matrix} from './matrix';
+import {MatrixM} from './matrix';
 
 
 export class Simplex {
@@ -13,7 +13,7 @@ export class Simplex {
      * @param beginBasis номера столбцов
      * @param matrix матрица
      */
-    constructor(beginBasis: number[], matrix: Matrix) {
+    constructor(beginBasis: number[], matrix: MatrixM) {
         this.begin_basis = beginBasis;
         this.matrix = matrix;
         matrix.gaussSelect(false, beginBasis);
