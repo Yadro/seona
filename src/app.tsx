@@ -11,14 +11,6 @@ import {SimplexC} from './components/simplex'
 import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
 
-let test = [
-    [0,0,0],
-    [0,1,3],
-    [1,2,2],
-    [7,2,10],
-    [1,1,1],
-];
-
 interface AppS {
     matrix: MatrixM;
     log;
@@ -36,11 +28,11 @@ class App extends React.Component<any, AppS> {
     }
 
     callback(matrix, polynom) {
-        let simplex = new Simplex([], polynom, matrix,
+        let simplex = new Simplex(polynom, matrix,
             getArrIndex(0, matrix.width - 2),
             getArrIndex(matrix.width - 1, matrix.width + matrix.height - 3)
         );
-        simplex.firstStep();
+        simplex.calc();
 
         this.setState({
             matrix: matrix,
@@ -63,7 +55,7 @@ class App extends React.Component<any, AppS> {
         return (
             <div>
                 <InputMatrix callback={this.callback.bind(this)}/>
-                <SimplexC matrix={test} log={this.state.log}/>
+                <SimplexC log={this.state.log}/>
             </div>
         )
     }
