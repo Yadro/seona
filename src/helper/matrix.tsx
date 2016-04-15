@@ -1,11 +1,13 @@
 ///<reference path="../../typings/main.d.ts"/>
 ///<reference path="fraction.js.d.ts"/>
 
-
+import * as React from 'react';
 import Fraction = require('fraction');
 import {FractionType} from './fraction.js';
-import {arrayHave} from './tools';
+import {arrayHas, copyArr} from './tools';
 
+
+type FractMatrix = FractionType[][];
 
 interface MatrixOperation {
     matrix;
@@ -16,10 +18,10 @@ class DebugMatrix {
 
     log: {
         info: string | Function;
-        matrix: Matrix;
+        matrix: FractMatrix;
     }[] = [];
 
-    add(info: string | Function, matrix?: Matrix) {
+    add(info: string | Function, matrix?: FractMatrix) {
         let obj;
         if (matrix) {
             obj = {
@@ -32,7 +34,7 @@ class DebugMatrix {
         this.log.push(obj);
     }
 
-    past(m: Matrix) {
+    past(m: FractMatrix) {
         this.log[this.log.length - 1].matrix = m;
     }
 
@@ -78,16 +80,15 @@ export class MatrixM {
         if (!matrix[0].length) {
             throw new Error('matrix is not matrix')
         }
+        this.matrix = [];
         if (typeof matrix[0][0] != "object") {
-            this.matrix = [];
             for (let i = 0; i < matrix.length; i++) {
-                this.matrix.push([]);
-                for (let j = 0, l = matrix[0].length; j < l; j++) {
-                    this.matrix[i].push(new Fraction(matrix[i][j]));
-                }
+                this.matrix.push(copyArr<FractionType>(matrix[i], (el) => new Fraction(el)));
             }
         } else {
-            this.matrix = <Array>matrix;
+            for (let i = 0; i < matrix.length; i++) {
+                this.matrix.push(copyArr<FractionType>(matrix[i], (el) => el.clone()));
+            }
         }
         this.height = matrix.length;
         this.width = matrix[0].length;
@@ -167,7 +168,25 @@ export class MatrixM {
                 if (typeof tmp == "number") {
                     this.matrix[row][i] = new Fraction(tmp);
                 } else if (tmp instanceof Fraction) {
-                    this.matrix[row][i] = <FractionType>tmp;
+                    this.matrix[row][i] = tmp as FractionType;
+                }
+            }
+        }
+    }
+
+    each(func: (cur: FractionType[], index: number, stop?) => FractionType[]) {
+        let br = false;
+        function stop() {
+            br = true;
+        }
+
+        for (let i = 0, l = this.height; i < l; i++) {
+            let tmp = func(this.matrix[i], i, stop);
+            if (br) {
+                break;
+            } else {
+                if (tmp != null) {
+                    this.matrix[i] = new Fraction(tmp);
                 }
             }
         }
@@ -395,10 +414,30 @@ export class MatrixM {
         let m = [];
         this.matrix.forEach((row, i) => {
             m.push([]);
-            row.forEach(el => {
-                m[i].push(el.toFraction());
+            row.forEach((el: FractionType) => {
+                if (el.d == 1) {
+                    m[i].push(+el.toFraction());
+                } else {
+                    m[i].push(el.toFraction());
+                }
             });
         });
         console.table(m);
     }
+}
+
+export function matrixToHtml(matrix, className?) {
+    let table = [];
+    for (let i = 0; i < matrix.height; i++) {
+        let row = [];
+        for (let j = 0; j < matrix.width; j++) {
+            row.push(<td key={j}>{matrix.matrix[i][j].toFraction()}</td>);
+        }
+        table.push(<tr key={i}>{row}</tr>);
+    }
+    return (
+        <table className={className ? className : ''}>
+            <tbody>{table}</tbody>
+        </table>
+    )
 }

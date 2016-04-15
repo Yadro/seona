@@ -8,7 +8,6 @@ import {createMatrix} from  '../helper/tools';
 
 
 interface InputMatrixP {
-    matrix;
     callback: Function;
 }
 

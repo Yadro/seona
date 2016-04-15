@@ -6,6 +6,7 @@ export class Simplex {
 
     begin_basis: number[];
     matrix: MatrixM;
+    debug: MatrixM[] = [];
 
     /** номера элементов колонок */
     head: number[];
@@ -67,6 +68,7 @@ export class Simplex {
         matrix[y][x] = new Fraction(1).div(ks);
 
         matrixInst.log();
+        this.pushLog(matrix);
 
         let oporaRow = matrixInst.getRow(y);
         for (let i = 0; i < matrixInst.height; i++) {
@@ -78,6 +80,7 @@ export class Simplex {
                 matrix[i][j] = origMatrix[i][j].sub(koeff.mul(oporaRow[j]));
             }
             matrixInst.log();
+            this.pushLog(matrix);
         }
 
         let buf = this.head[x];
@@ -86,5 +89,9 @@ export class Simplex {
 
         this.matrix = matrixInst;
         return matrix;
+    }
+
+    pushLog(matrix) {
+        this.debug.push(new MatrixM(matrix));
     }
 }

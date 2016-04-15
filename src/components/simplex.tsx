@@ -1,6 +1,7 @@
 ///<reference path="../../typings/main.d.ts"/>
 
 import * as React from 'react';
+import {matrixToHtml} from "../helper/matrix";
 
 interface SimplexP {
     matrix;
@@ -15,7 +16,7 @@ export class SimplexC extends React.Component<SimplexP, any> {
     }
 
     render() {
-        let log = this.props.log.map(e => <div>{e}</div>);
+        let log = this.props.log.map((e, i) => <div key={i}>{matrixToHtml(e, 'simplex')}</div>);
         return (
             <div>
                 <h2>Simplex</h2>
