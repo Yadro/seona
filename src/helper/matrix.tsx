@@ -7,7 +7,7 @@ import {FractionType} from './fraction.js';
 import {arrayHas, copyArr} from './tools';
 
 
-type FractMatrix = FractionType[][];
+export type FractMatrix = FractionType[][];
 
 interface MatrixOperation {
     matrix;
@@ -373,6 +373,19 @@ export class MatrixM {
         }
         return this;
     }
+
+    removeCol(col: number) {
+        for (let i = 0; i < this.height; i++) {
+            let arr = [];
+            for (var j = 0; j < this.width; j++) {
+                if (col == j) continue;
+                arr.push(this.matrix[i][j]);
+            }
+            this.matrix[i] = arr;
+        }
+        this.width -= 1;
+    }
+
 
     equals(matrix: MatrixM): boolean {
         if (this.height != matrix.height || this.width != matrix.width) {

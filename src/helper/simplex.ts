@@ -1,4 +1,4 @@
-import {MatrixM} from './matrix';
+import {MatrixM, FractMatrix} from './matrix';
 import Fraction = require('fraction');
 import {FractionType} from 'fraction.js';
 import {copyArr} from "./tools";
@@ -66,11 +66,8 @@ export class Simplex {
             let el = lastCol[i].div(matrix[i][x]);
 
             if (el.compare(minEl) < 0) {
-                console.log(`${el.toFraction()} < ${minEl.toFraction()}`);
                 minEl = el;
                 minId = i;
-            } else {
-                console.log(`${el.toFraction()} >= ${minEl.toFraction()}`);
             }
         }
         return {
@@ -80,28 +77,32 @@ export class Simplex {
     }
 
     firstStep() {
-        let l = this.matrix.height;
-        for (let i = 0; i < 1; i++) {
+        let l = this.matrix.height - 1;
+        for (let i = 0; i < l; i++) {
             let opor = this.findReference();
             console.log(opor);
             this.swap(opor.x, opor.y);
             this.removeCol(opor.x);
         }
+        this.pushLog(this.matrix.matrix);
     }
 
     /**
      * Перестановка элементов
-     * @param col столбец
-     * @param row строка
+     * @param x столбец
+     * @param y строка
      */
-    swap(col, row) {
+    swap(x, y) {
         let origMatrix = this.matrix.matrix;
         let matrixInst = this.matrix.clone();
         let matrix = matrixInst.matrix;
 
-        let x = col;
-        let y = row;
+        let buf = this.head[x];
+        this.head[x] = this.left[y];
+        this.left[y] = buf;
+
         let ks: FractionType = origMatrix[y][x];
+        console.log("element: "  +ks.toFraction());
 
         // расчет строки y (row)
         for (let i = 0; i < matrixInst.width; i++) {
@@ -129,27 +130,20 @@ export class Simplex {
             this.pushLog(matrix);
         }
 
-        let buf = this.head[x];
-        this.head[x] = this.left[y];
-        this.left[y] = buf;
+
 
         this.matrix = matrixInst;
+        console.log(this.matrix);
         return matrix;
     }
 
     removeCol(col: number) {
-        for (let i = 0; i < this.matrix.height; i++) {
-            let arr = [];
-            for (var j = 0; j < this.matrix.width; j++) {
-                if (col == j) continue;
-                arr.push(this.matrix.matrix[i][j]);
-            }
-            this.matrix.matrix[i] = arr;
-        }
+        this.matrix.removeCol(col);
+        console.log(this.matrix);
         this.head.splice(col, 1);
     }
 
-    pushLog(matrix) {
+    pushLog(matrix: FractMatrix) {
         this.debug.push({
             m: new MatrixM(matrix),
             p: [copyArr(this.head), copyArr(this.left)]
