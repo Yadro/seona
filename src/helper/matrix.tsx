@@ -95,10 +95,12 @@ export class MatrixM {
     }
 
     getRow(row): FractionType[] {
+        if (row > this.height - 1) throw new Error('getRow index out of bound');
         return this.matrix[row];
     }
 
     getCol(col): FractionType[] {
+        if(col > this.width - 1) throw new Error('getCol index out of bound');
         let vec = [];
         for (var i = 0; i < this.height; i++) {
             vec.push(this.matrix[i][col]);

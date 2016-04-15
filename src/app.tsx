@@ -41,7 +41,8 @@ class App extends React.Component<any, AppS> {
             getArrIndex(0, matrix.width - 2),
             getArrIndex(matrix.width - 1, matrix.width + matrix.height - 3)
         );
-        simplex.swap_basis(7, 2);
+        simplex.firstStep();
+        // simplex.swap(7, 2);
 
         this.setState({
             matrix: matrix,

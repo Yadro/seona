@@ -27,10 +27,6 @@ export class Simplex {
         //matrix.gaussSelect(false, beginBasis);
     }
 
-    firstStep() {
-
-    }
-
     getHeadIndex(ind) {
         let i = this.head.indexOf(ind);
         if (i == -1) throw new Error('index not found');
@@ -44,24 +40,69 @@ export class Simplex {
     }
 
     /**
-     * asdfasdf
-     * @param k столбец
-     * @param s строка
+     * Поиск опорного элемента
+     * @returns {{k: number, s: number}}
      */
-    swap_basis(k, s) {
+    findOpor() {
+        let matrix = this.matrix.matrix;
+        // todo проверить есть ли отриц элементы
+        let x = getIndMaxEl(this.matrix.getRow(this.matrix.height - 1).slice(0, this.matrix.width - 2));
+        
+        let i = 0;
+        while (i < this.matrix.height - 1 && matrix[i][x].s == -1) {
+            i++;
+        }
+
+        let lastCol = this.matrix.getCol(this.matrix.width - 1);
+        let minEl = lastCol[i].div(matrix[i][x]);
+        let minId = i;
+        for (; i < this.matrix.height - 1; i++) {
+            if (matrix[i][x].s == -1) continue;
+
+            let el = lastCol[i].div(matrix[i][x]);
+
+            if (el.compare(minEl) < 0) {
+                console.log(`${el.toFraction()} < ${minEl.toFraction()}`);
+                minEl = el;
+                minId = i;
+            } else {
+                console.log(`${el.toFraction()} >= ${minEl.toFraction()}`);
+            }
+        }
+        return {
+            x: x,
+            y: minId
+        }
+    }
+
+    firstStep() {
+        let l = this.matrix.height;
+        for (let i = 0; i < l; i++) {
+            let opor = this.findOpor();
+            console.log(opor);
+            this.swap(opor.x, opor.y);
+        }
+    }
+
+    /**
+     * Перестановка элементов
+     * @param col столбец
+     * @param row строка
+     */
+    swap(col, row) {
         let origMatrix = this.matrix.matrix;
         let matrixInst = this.matrix.clone();
         let matrix = matrixInst.matrix;
 
-        let x = this.getLeftIndex(k);
-        let y = this.getHeadIndex(s);
+        let x = col;
+        let y = row;
         let ks: FractionType = origMatrix[y][x];
 
-        // расчет строки y (s)
+        // расчет строки y (row)
         for (let i = 0; i < matrixInst.width; i++) {
             matrix[y][i] = origMatrix[y][i].div(ks);
         }
-        // расчет столбца x (k)
+        // расчет столбца x (col)
         for (let i = 0; i < matrixInst.height; i++) {
             matrix[i][x] = origMatrix[i][x].div(ks.neg());
         }
@@ -91,7 +132,35 @@ export class Simplex {
         return matrix;
     }
 
+    removeCol(col: number) {
+
+    }
+
     pushLog(matrix) {
         this.debug.push(new MatrixM(matrix));
     }
+}
+
+/**
+ * Наибольший отрицательный элемент
+ * @param arr
+ * @returns {number|any}
+ */
+function getIndMaxEl(arr: FractionType[]): number {
+    let max, maxId;
+    let i = 0;
+
+    while (i < arr.length && arr[i].s == 1) {
+        i++;
+    }
+    max = arr[i];
+    maxId = i;
+
+    for (; i < arr.length; i++) {
+        if (arr[i].s == -1 && arr[i].compare(max) > 0) {
+            max = arr[i];
+            maxId = i;
+        }
+    }
+    return maxId;
 }
