@@ -18,10 +18,10 @@ class DebugMatrix {
 
     log: {
         info: string | Function;
-        matrix: FractMatrix;
+        matrix: MatrixM;
     }[] = [];
 
-    add(info: string | Function, matrix?: FractMatrix) {
+    add(info: string | Function, matrix?: MatrixM) {
         let obj;
         if (matrix) {
             obj = {
@@ -34,21 +34,8 @@ class DebugMatrix {
         this.log.push(obj);
     }
 
-    past(m: FractMatrix) {
+    past(m: MatrixM) {
         this.log[this.log.length - 1].matrix = m;
-    }
-
-    print() {
-        this.log.forEach(e => {
-            if (typeof e.info == "function") {
-                e.info();
-            } else {
-                console.info(e.info.toString());
-            }
-            if (e.hasOwnProperty('matrix')) {
-                console.log(e.matrix.log());
-            }
-        });
     }
 }
 
@@ -402,7 +389,7 @@ export class MatrixM {
         return true;
     }
 
-    clone() {
+    clone(): MatrixM {
         let matrix = [];
         this.matrix.forEach((r, i) => {
             matrix.push([]);

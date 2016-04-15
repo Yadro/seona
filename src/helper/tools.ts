@@ -36,7 +36,7 @@ export function getArrIndex(from: number, to: number): number[] {
     return arr;
 }
 
-export function copyArr<T>(arr: T[], copy?: (elem: T) => T) {
+export function copyArr<T>(arr: T[], copy?: (elem: T) => T): T[] {
     if (copy) {
         return arr.map((e) => {
             return copy(e);

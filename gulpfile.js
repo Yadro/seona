@@ -21,10 +21,6 @@ gulp.task('copy', function () {
 });
 
 gulp.task('default', ['compile', 'copy'], function() {
-    gulp.watch('src/**/*.{ts,tsx}', function() {
-        gulp.run('compile');
-    });
-    gulp.watch('src/**/*.js', function() {
-        gulp.run('copy');
-    });
+    gulp.watch('src/**/*.{ts,tsx}', ['compile']);
+    gulp.watch('src/**/*.js', ['copy']);
 });

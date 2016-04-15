@@ -32,61 +32,6 @@ export class Simplex {
     }
 
     /**
-     * возращает номер столбца элемента
-     * @param ind
-     * @returns {number}
-     */
-    getHeadIndex(ind) {
-        let i = this.head.indexOf(ind);
-        if (i == -1) throw new Error('index not found');
-        return i;
-    }
-
-    /**
-     * возращает номер строки элемента
-     * @param ind
-     * @returns {number}
-     */
-    getLeftIndex(ind) {
-        let i = this.left.indexOf(ind);
-        if (i == -1) throw new Error('index not found');
-        return i;
-    }
-
-    /**
-     * Поиск опорного элемента
-     * @returns {{k: number, s: number}}
-     */
-    findReference() {
-        let matrix = this.matrix.matrix;
-        // todo проверить есть ли отриц элементы
-        let x = getIndMaxEl(this.matrix.getRow(this.matrix.height - 1).slice(0, this.matrix.width - 2));
-        
-        let i = 0;
-        while (i < this.matrix.height - 1 && matrix[i][x].s == -1) {
-            i++;
-        }
-
-        let lastCol = this.matrix.getCol(this.matrix.width - 1);
-        let minEl = lastCol[i].div(matrix[i][x]);
-        let minId = i;
-        for (; i < this.matrix.height - 1; i++) {
-            if (matrix[i][x].s == -1) continue;
-
-            let el = lastCol[i].div(matrix[i][x]);
-
-            if (el.compare(minEl) < 0) {
-                minEl = el;
-                minId = i;
-            }
-        }
-        return {
-            x: x,
-            y: minId
-        }
-    }
-
-    /**
      * расчеты
      */
     calc() {
@@ -181,10 +126,63 @@ export class Simplex {
             this.pushLog(matrix);
         }
 
-
-
         this.matrix = matrixInst;
         return matrix;
+    }
+
+    /**
+     * возращает номер столбца элемента
+     * @param ind
+     * @returns {number}
+     */
+    getHeadIndex(ind) {
+        let i = this.head.indexOf(ind);
+        if (i == -1) throw new Error('index not found');
+        return i;
+    }
+
+    /**
+     * возращает номер строки элемента
+     * @param ind
+     * @returns {number}
+     */
+    getLeftIndex(ind) {
+        let i = this.left.indexOf(ind);
+        if (i == -1) throw new Error('index not found');
+        return i;
+    }
+
+    /**
+     * Поиск опорного элемента
+     * @returns {{k: number, s: number}}
+     */
+    findReference() {
+        let matrix = this.matrix.matrix;
+        // todo проверить есть ли отриц элементы
+        let x = getIndMaxEl(this.matrix.getRow(this.matrix.height - 1).slice(0, this.matrix.width - 2));
+
+        let i = 0;
+        while (i < this.matrix.height - 1 && matrix[i][x].s == -1) {
+            i++;
+        }
+
+        let lastCol = this.matrix.getCol(this.matrix.width - 1);
+        let minEl = lastCol[i].div(matrix[i][x]);
+        let minId = i;
+        for (; i < this.matrix.height - 1; i++) {
+            if (matrix[i][x].s == -1) continue;
+
+            let el = lastCol[i].div(matrix[i][x]);
+
+            if (el.compare(minEl) < 0) {
+                minEl = el;
+                minId = i;
+            }
+        }
+        return {
+            x: x,
+            y: minId
+        }
     }
 
     removeCol(col: number) {

@@ -13,6 +13,7 @@ import {getArrIndex} from "./helper/tools";
 
 interface AppS {
     matrix: MatrixM;
+    simplex;
     log;
 }
 
@@ -37,7 +38,7 @@ class App extends React.Component<any, AppS> {
         this.setState({
             matrix: matrix,
             log: simplex.debug
-        });
+        } as AppS);
         
         /*
         let m = matrix.gaussSelect(true, [0, 4, 6]);
