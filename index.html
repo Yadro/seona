@@ -16,14 +16,25 @@
             border-right: 1px solid;
             margin: 5px;
         }
+
         table td {
             text-align: right;
             padding: 2px 5px;
         }
+
+        table.simplex {
+            border: none;
+        }
         table.simplex td:last-child {
             border-left: 1px solid;
         }
-        table.simplex tr:last-child {
+        table.simplex td:first-child {
+            border-right: 1px solid;
+        }
+        table.simplex thead td {
+            border-bottom: 1px solid;
+        }
+        table.simplex tbody tr:last-child td {
             border-top: 1px solid;
         }
     </style>

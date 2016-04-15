@@ -24,11 +24,16 @@ export function getArrIndex(from: number, to: number): number[] {
     return arr;
 }
 
-export function copyArr<T>(arr: T[], copy: (elem: T) => T) {
-    return arr.map((e) => {
-        return copy(e);
-    });
+export function copyArr<T>(arr: T[], copy?: (elem: T) => T) {
+    if (copy) {
+        return arr.map((e) => {
+            return copy(e);
+        });
+    } else {
+        return arr.slice();
+    }
 }
+
 
 
 

@@ -1,12 +1,16 @@
 import {MatrixM} from './matrix';
 import Fraction = require('fraction');
 import {FractionType} from 'fraction.js';
+import {copyArr} from "./tools";
 
 export class Simplex {
 
     begin_basis: number[];
     matrix: MatrixM;
-    debug: MatrixM[] = [];
+    debug: {
+        m: MatrixM;
+        p;
+    }[] = [];
 
     /** номера элементов колонок */
     head: number[];
@@ -43,7 +47,7 @@ export class Simplex {
      * Поиск опорного элемента
      * @returns {{k: number, s: number}}
      */
-    findOpor() {
+    findReference() {
         let matrix = this.matrix.matrix;
         // todo проверить есть ли отриц элементы
         let x = getIndMaxEl(this.matrix.getRow(this.matrix.height - 1).slice(0, this.matrix.width - 2));
@@ -77,10 +81,11 @@ export class Simplex {
 
     firstStep() {
         let l = this.matrix.height;
-        for (let i = 0; i < l; i++) {
-            let opor = this.findOpor();
+        for (let i = 0; i < 1; i++) {
+            let opor = this.findReference();
             console.log(opor);
             this.swap(opor.x, opor.y);
+            this.removeCol(opor.x);
         }
     }
 
@@ -133,11 +138,22 @@ export class Simplex {
     }
 
     removeCol(col: number) {
-
+        for (let i = 0; i < this.matrix.height; i++) {
+            let arr = [];
+            for (var j = 0; j < this.matrix.width; j++) {
+                if (col == j) continue;
+                arr.push(this.matrix.matrix[i][j]);
+            }
+            this.matrix.matrix[i] = arr;
+        }
+        this.head.splice(col, 1);
     }
 
     pushLog(matrix) {
-        this.debug.push(new MatrixM(matrix));
+        this.debug.push({
+            m: new MatrixM(matrix),
+            p: [copyArr(this.head), copyArr(this.left)]
+        });
     }
 }
 

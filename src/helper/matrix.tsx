@@ -427,19 +427,3 @@ export class MatrixM {
         console.table(m);
     }
 }
-
-export function matrixToHtml(matrix, className?) {
-    let table = [];
-    for (let i = 0; i < matrix.height; i++) {
-        let row = [];
-        for (let j = 0; j < matrix.width; j++) {
-            row.push(<td key={j}>{matrix.matrix[i][j].toFraction()}</td>);
-        }
-        table.push(<tr key={i}>{row}</tr>);
-    }
-    return (
-        <table className={className ? className : ''}>
-            <tbody>{table}</tbody>
-        </table>
-    )
-}
