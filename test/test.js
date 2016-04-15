@@ -21,7 +21,7 @@ function createMatrix(n, m) {
     }
 }
 
-describe('Matrix', () => {
+describe('FractMatrix', () => {
     var MatrixM;
     var Fraction;
 
