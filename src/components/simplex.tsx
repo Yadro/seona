@@ -26,6 +26,9 @@ export class SimplexC extends React.Component<SimplexP, any> {
 }
 
 function matrixToHtml(params, className?) {
+    if (params.text) {
+        return (<div>{params.text}</div>);
+    }
     let matrix = params.m,
         head = params.p[0],
         left = params.p[1];

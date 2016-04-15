@@ -4,6 +4,18 @@ export function arrayHas<T>(arr: T[], element: T): boolean {
     return arr.indexOf(element) !== -1;
 }
 
+export function createArray(n) {
+    let a = [];
+    for (var i = 0; i < n; i++) {
+        a.push(0);
+    }
+    return a;
+}
+
+export function getLastEl(arr: any[]) {
+    return arr[arr.length - 1];
+}
+
 export function createMatrix(w: number, h: number) {
     let matrix = [];
     for (let i = 0; i < h; i++) {
@@ -33,9 +45,6 @@ export function copyArr<T>(arr: T[], copy?: (elem: T) => T) {
         return arr.slice();
     }
 }
-
-
-
 
 export function mulVec(vec: FractionType[], f: (el: FractionType, i: number) => FractionType) {
     return vec.map((e, i) => {

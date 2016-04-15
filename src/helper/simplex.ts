@@ -1,15 +1,17 @@
 import {MatrixM, FractMatrix} from './matrix';
 import Fraction = require('fraction');
 import {FractionType} from 'fraction.js';
-import {copyArr} from "./tools";
+import {copyArr, getLastEl} from "./tools";
 
 export class Simplex {
 
     begin_basis: number[];
+    polynom: FractionType[];
     matrix: MatrixM;
     debug: {
-        m: MatrixM;
-        p;
+        m?: MatrixM;
+        p?;
+        text?;
     }[] = [];
 
     /** номера элементов колонок */
@@ -19,12 +21,14 @@ export class Simplex {
 
     /**
      * @param beginBasis номера столбцов
+     * @param polynom
      * @param matrix матрица
      * @param head номера элементов колонок
      * @param left номера элементов строк
      */
-    constructor(beginBasis: number[], matrix: MatrixM, head, left) {
+    constructor(beginBasis: number[], polynom, matrix: MatrixM, head, left) {
         this.begin_basis = beginBasis;
+        this.polynom = copyArr<FractionType>(polynom, (e) => new Fraction(e));
         this.matrix = matrix;
         this.head = head;
         this.left = left;
@@ -76,6 +80,9 @@ export class Simplex {
         }
     }
 
+    /**
+     * работа с матрицей
+     */
     firstStep() {
         let l = this.matrix.height - 1;
         for (let i = 0; i < l; i++) {
@@ -85,6 +92,43 @@ export class Simplex {
             this.removeCol(opor.x);
         }
         this.pushLog(this.matrix.matrix);
+        this.polynomStep();
+        this.pushLog(this.matrix.matrix);
+    }
+
+    polynomStep() {
+        let log;
+        // let matrixInst = this.matrix.clone();
+        let matrix = this.matrix.matrix;
+
+        this.head.forEach((num, i) => {
+
+            let res = this.polynom[num];
+            log = res.toFraction();
+
+            for (var j = 0; j < this.matrix.height - 1; j++) {
+                let leftInd = this.left[j];
+                log += ' + ' + matrix[i][j].neg().toFraction() + ' * ' + this.polynom[leftInd].toFraction();
+                res = res.add(matrix[i][j].neg().mul(this.polynom[leftInd]));
+            }
+
+            log = `x${num+1} = ${log} = ${res.toFraction()}`;
+            this.debug.push({text: log});
+            matrix[this.matrix.height - 1][i] = res;
+        });
+
+        let res = getLastEl(this.polynom);
+        log = res.toFraction();
+        // last coefficient
+        let     i = this.matrix.width - 1;
+        for (var j = 0; j < this.matrix.height - 1; j++) {
+            let leftInd = this.left[j];
+            log += ' + ' + matrix[i][j].toFraction() + ' * ' + this.polynom[leftInd].toFraction();
+            res = res.add(matrix[i][j].mul(this.polynom[leftInd]));
+        }
+        log = `p = -(${log}) = ${res.neg().toFraction()}`;
+        this.debug.push({text: log});
+        matrix[this.matrix.height - 1][i] = res.neg();
     }
 
     /**

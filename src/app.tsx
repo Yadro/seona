@@ -10,7 +10,6 @@ import {Graph} from './components/graph';
 import {SimplexC} from './components/simplex'
 import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
-//import {Fraction} from "helper/fraction.js.ts";
 
 let test = [
     [0,0,0],
@@ -36,13 +35,12 @@ class App extends React.Component<any, AppS> {
         };
     }
 
-    callback(matrix) {
-        let simplex = new Simplex([], matrix,
+    callback(matrix, polynom) {
+        let simplex = new Simplex([], polynom, matrix,
             getArrIndex(0, matrix.width - 2),
             getArrIndex(matrix.width - 1, matrix.width + matrix.height - 3)
         );
         simplex.firstStep();
-        // simplex.swap(7, 2);
 
         this.setState({
             matrix: matrix,

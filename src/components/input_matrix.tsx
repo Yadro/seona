@@ -3,15 +3,14 @@
 import * as React from 'react';
 import Fraction = require('../../node_modules/fraction.js/fraction');
 import {MatrixM} from "../helper/matrix";
-import {createMatrix} from  '../helper/tools';
-//import {Fraction} from '../helper/fraction.js.ts';
-
+import {createMatrix, createArray} from  '../helper/tools';
 
 interface InputMatrixP {
-    callback: Function;
+    callback: (matr, polynom) => any;
 }
 
 interface InputMatrixS {
+    polynom: number[]
     matrix;
     width: number;
     height: number;
@@ -24,22 +23,27 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
     constructor(props) {
         super(props);
-        //let matrix = props.matrix.get();
-        let tmp = localStorage.getItem('matrix');
-        if (tmp) {
-            let m = JSON.parse(tmp);
-            this.state = {
-                matrix: m,
-                width: m[0].length,
-                height: m.length
-            };
+        let matr = localStorage.getItem('matrix');
+        let polynom = localStorage.getItem('polynom');
+
+        if (matr) {
+            matr = JSON.parse(matr);
         } else {
-            this.state = {
-                matrix: createMatrix(3, 3),
-                width: 3,
-                height: 3
-            };
+            matr = null;
         }
+        if (polynom) {
+            polynom = JSON.parse(polynom);
+        } else {
+            polynom = null;
+        }
+
+        let width = matr ? matr[0].length : 3;
+        this.state = {
+            polynom: polynom || createArray(width),
+            matrix: matr || createMatrix(3, 3),
+            width: width,
+            height:  matr ? matr.length : 3,
+        };
     }
 
     onChange(el, e) {
@@ -50,8 +54,15 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         if (pos.length == 2 && matrix[i] != null && matrix[i][j] != null) {
             matrix[i][j] = value;
-            this.setState({matrix});
+            this.setState({matrix} as InputMatrixS);
         }
+    }
+
+    onPolynomChange(n, e) {
+        const value = e.target.value;
+        let polynom = this.state.polynom;
+        polynom[n] = value;
+        this.setState({polynom} as InputMatrixS);
     }
 
     setSize(rot: 'width' | 'height') {
@@ -65,30 +76,37 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
                 } else {
                     obj['matrix'] = createMatrix(this.state.width, size);
                 }
-                this.setState(obj);
+                obj['polynom'] = createArray(this.state.width);
+                this.setState(obj as InputMatrixS);
             }
         }
     };
 
     verify() {
-        const {matrix, height, width} = this.state;
-
-        localStorage.setItem('matrix', JSON.stringify(matrix));
-
-        let matrix_ = [];
+        const {matrix, polynom} = this.state;
+        let matrixFract = [];
 
         matrix.forEach((row, i) => {
-            matrix_.push([]);
+            matrixFract.push([]);
             row.forEach((el, j) => {
                 try {
-                    matrix_[i].push(new Fraction(el));
+                    matrixFract[i].push(new Fraction(el));
                 } catch (e) {
                     console.error(i + " " + j, e);
                 }
             })
         });
 
-        this.props.callback(new MatrixM(matrix_));
+        localStorage.setItem('matrix', JSON.stringify(matrix));
+        localStorage.setItem('polynom', JSON.stringify(polynom));
+
+        this.props.callback(new MatrixM(matrixFract), polynom);
+    }
+
+    rowPoly() {
+        return this.state.polynom.map((el, index) => {
+            return <input type="text" key={index} value={el} onChange={this.onPolynomChange.bind(this, index)}/>
+        });
     }
 
     row_render(row: Fraction[], index) {
@@ -111,6 +129,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         return (
             <div>
+                <div>{this.rowPoly()}</div>
                 size
                 <input type="text" value={this.state.height} onChange={this.setSize('height').bind(this)}/>x
                 <input type="text" value={this.state.width} onChange={this.setSize('width').bind(this)}/>
