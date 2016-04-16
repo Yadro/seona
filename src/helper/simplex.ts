@@ -110,7 +110,7 @@ export class Simplex {
         matrix[y][x] = new Fraction(1).div(ks);
 
         matrixInst.log();
-        this.pushLog(matrix);
+        this.pushLog(matrix, [y, x]);
 
         // вычисляем остальные строки
         let oporaRow = matrixInst.getRow(y);
@@ -123,7 +123,7 @@ export class Simplex {
                 matrix[i][j] = origMatrix[i][j].sub(koeff.mul(oporaRow[j]));
             }
             matrixInst.log();
-            this.pushLog(matrix);
+            this.pushLog(matrix, [i, -1]);
         }
 
         this.matrix = matrixInst;
@@ -190,10 +190,11 @@ export class Simplex {
         this.head.splice(col, 1);
     }
 
-    pushLog(matrix: FractMatrix) {
+    pushLog(matrix: FractMatrix, select?: number[]) {
         this.debug.push({
             m: new MatrixM(matrix),
-            p: [copyArr(this.head), copyArr(this.left)]
+            p: [copyArr(this.head), copyArr(this.left)],
+            select: select || null
         });
     }
 }
