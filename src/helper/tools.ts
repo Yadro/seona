@@ -12,7 +12,7 @@ export function createArray(n) {
     return a;
 }
 
-export function getLastEl(arr: any[]) {
+export function getLastItem(arr: any[]) {
     return arr[arr.length - 1];
 }
 

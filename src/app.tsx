@@ -29,10 +29,7 @@ class App extends React.Component<any, AppS> {
     }
 
     callback(matrix, polynom) {
-        let simplex = new Simplex(polynom, matrix,
-            getArrIndex(0, matrix.width - 2),
-            getArrIndex(matrix.width - 1, matrix.width + matrix.height - 2)
-        );
+        let simplex = new Simplex(polynom, matrix);
         simplex.calc();
 
         this.setState({

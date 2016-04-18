@@ -36,7 +36,7 @@ function matrixToHtml(params, className?) {
         // шапка
         headArr.push(<td key="0"></td>);
         for (var i = 0; i < head.length; i++) {
-            headArr.push(<td key={i+1}>{"x" + (head[i] + 1)}</td>);
+            headArr.push(<td key={i+1}>{"x" + (head[i])}</td>);
         }
         headArr.push(<td key={i + 1}>_</td>);
 
@@ -47,7 +47,7 @@ function matrixToHtml(params, className?) {
             if (i > left.length - 1) {
                 row.push(<td key="0">p</td>);
             } else {
-                row.push(<td key="0">{"x" + (left[i] + 1)}</td>);
+                row.push(<td key="0">{"x" + (left[i])}</td>);
             }
 
             // остальные элементы

@@ -1,7 +1,7 @@
 import {MatrixM, FractMatrix} from './matrix';
 import Fraction = require('fraction');
 import {FractionType} from 'fraction.js';
-import {copyArr, getLastEl} from "./tools";
+import {copyArr, getLastItem, getArrIndex} from "./tools";
 
 export class Simplex {
     
@@ -21,15 +21,13 @@ export class Simplex {
     /**
      * @param polynom
      * @param matrix матрица
-     * @param head номера элементов колонок
-     * @param left номера элементов строк
      */
-    constructor(polynom: number[], matrix: MatrixM, head: number[], left: number[]) {
+    constructor(polynom: number[], matrix: MatrixM) {
         console.clear();
         this.polynom = polynom.map((e) => new Fraction(e));
         this.matrix = matrix;
-        this.head = head;
-        this.left = left;
+        this.head = getArrIndex(1, matrix.width - 1);
+        this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
         this.addLastRow();
 
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
@@ -69,12 +67,16 @@ export class Simplex {
 
     /**
      * Подставляем найденные элементы в полином и находим коэффициенты элементов
+     * todo не правильно вычисляет коэфф последнего эл
      */
     lastStep() {
         let log;
         let matrix = this.matrix.matrix;
+        let row = [];
 
+        // calc coefficients
         this.head.forEach((num, i) => {
+            num -= 1;
             let res = this.polynom[num];
             log = res.toFraction();
 
@@ -83,23 +85,28 @@ export class Simplex {
                 log += ' + ' + matrix[i][j].neg().toFraction() + ' * ' + this.polynom[leftInd].toFraction();
                 res = res.add(matrix[i][j].neg().mul(this.polynom[leftInd]));
             }
+            row.push(res);
 
             this.debug.push({text: `x${num+1} = ${log} = ${res.toFraction()}`});
-            matrix[this.matrix.height - 1][i] = res;
         });
+        matrix[this.matrix.height - 1] = row;
 
-        let res = getLastEl(this.polynom);
+        // calc last coefficient
+        // res = p_n + sum_left_j(m_0j * p_j)
+        let res = getLastItem(this.polynom);
         log = res.toFraction();
 
-        // last coefficient
         let i = this.matrix.width - 1;
         for (var j = 0; j < this.matrix.height - 1; j++) {
             let leftInd = this.left[j];
             log += ' + ' + matrix[i][j].toFraction() + ' * ' + this.polynom[leftInd].toFraction();
             res = res.add(matrix[i][j].mul(this.polynom[leftInd]));
         }
+        row.push(res.neg());
+
         this.debug.push({text: `p = -(${log}) = ${res.neg().toFraction()}`});
-        matrix[this.matrix.height - 1][i] = res.neg();
+
+        matrix[this.matrix.height - 1] = row;
     }
 
     /**
