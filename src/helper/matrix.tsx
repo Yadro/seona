@@ -360,7 +360,20 @@ export class MatrixM {
         }
         return this;
     }
+    
+    /**
+     * Вставляет строку в конец, обновляет высоту 
+     * @param row
+     */
+    pushRow(row: FractionType[]) {
+        this.matrix.push(row);
+        this.height = this.matrix.length;
+    }
 
+    /**
+     * Удаляет колонку, обновляет ширину
+     * @param col
+     */
     removeCol(col: number) {
         for (let i = 0; i < this.height; i++) {
             let arr = [];
@@ -372,8 +385,7 @@ export class MatrixM {
         }
         this.width -= 1;
     }
-
-
+    
     equals(matrix: MatrixM): boolean {
         if (this.height != matrix.height || this.width != matrix.width) {
             return false;
@@ -412,6 +424,9 @@ export class MatrixM {
         return buf;
     }
 
+    /**
+     * Печатает матрицу в консоль
+     */
     log() {
         let m = [];
         this.matrix.forEach((row, i) => {

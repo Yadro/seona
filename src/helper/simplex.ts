@@ -24,33 +24,53 @@ export class Simplex {
      * @param head номера элементов колонок
      * @param left номера элементов строк
      */
-    constructor(polynom, matrix: MatrixM, head, left) {
-        this.polynom = copyArr<FractionType>(polynom, (e) => new Fraction(e));
+    constructor(polynom: number[], matrix: MatrixM, head: number[], left: number[]) {
+        console.clear();
+        this.polynom = polynom.map((e) => new Fraction(e));
         this.matrix = matrix;
         this.head = head;
         this.left = left;
+        this.addLastRow();
+
+        this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
+    }
+
+    private addLastRow() {
+        let {matrix: mtx, height, width} = this.matrix;
+        let row = new Array(width);
+
+        for (let j = 0; j < width; j++) {
+            row[j] = 0;
+            for (let i = 0; i < height; i++) {
+                row[j] += mtx[i][j];
+            }
+        }
+        row = row.map(e => new Fraction(-e));
+        this.matrix.pushRow(row);
     }
 
     /**
-     * расчеты
+     * рассчеты
      */
     calc() {
         let l = this.matrix.height - 1;
         for (let i = 0; i < l; i++) {
             let opor = this.findReference();
             console.log(opor);
+
             this.swap(opor.x, opor.y);
             this.removeCol(opor.x);
+
+            this.pushLog(this.matrix.matrix, [], 'Конец вычислений');
         }
-        this.pushLog(this.matrix.matrix);
-        this.polynomStep();
+        this.lastStep();
         this.pushLog(this.matrix.matrix);
     }
 
     /**
      * Подставляем найденные элементы в полином и находим коэффициенты элементов
      */
-    polynomStep() {
+    lastStep() {
         let log;
         let matrix = this.matrix.matrix;
 
@@ -91,13 +111,15 @@ export class Simplex {
         let origMatrix = this.matrix.matrix;
         let matrixInst = this.matrix.clone();
         let matrix = matrixInst.matrix;
+        let ks: FractionType = origMatrix[y][x];
+
+        console.log("element: "  +ks.toFraction());
+        matrixInst.log();
+        this.pushLog(matrix, [y, x], 'Находим опорный элемент');
 
         let buf = this.head[x];
         this.head[x] = this.left[y];
         this.left[y] = buf;
-
-        let ks: FractionType = origMatrix[y][x];
-        console.log("element: "  +ks.toFraction());
 
         // расчет строки y (row)
         for (let i = 0; i < matrixInst.width; i++) {
@@ -110,7 +132,7 @@ export class Simplex {
         matrix[y][x] = new Fraction(1).div(ks);
 
         matrixInst.log();
-        this.pushLog(matrix, [y, x]);
+        this.pushLog(matrix, [y, x], 'Вычисляем строку и колонку');
 
         // вычисляем остальные строки
         let oporaRow = matrixInst.getRow(y);
@@ -123,33 +145,11 @@ export class Simplex {
                 matrix[i][j] = origMatrix[i][j].sub(koeff.mul(oporaRow[j]));
             }
             matrixInst.log();
-            this.pushLog(matrix, [i, -1]);
+            this.pushLog(matrix, [i, -1], 'Вычитаем строку');
         }
 
         this.matrix = matrixInst;
         return matrix;
-    }
-
-    /**
-     * возращает номер столбца элемента
-     * @param ind
-     * @returns {number}
-     */
-    getHeadIndex(ind) {
-        let i = this.head.indexOf(ind);
-        if (i == -1) throw new Error('index not found');
-        return i;
-    }
-
-    /**
-     * возращает номер строки элемента
-     * @param ind
-     * @returns {number}
-     */
-    getLeftIndex(ind) {
-        let i = this.left.indexOf(ind);
-        if (i == -1) throw new Error('index not found');
-        return i;
     }
 
     /**
@@ -185,16 +185,45 @@ export class Simplex {
         }
     }
 
+    /**
+     * возращает номер столбца элемента
+     * @param ind
+     * @returns {number}
+     */
+    getHeadIndex(ind) {
+        let i = this.head.indexOf(ind);
+        if (i == -1) throw new Error('index not found');
+        return i;
+    }
+
+    /**
+     * возращает номер строки элемента
+     * @param ind
+     * @returns {number}
+     */
+    getLeftIndex(ind) {
+        let i = this.left.indexOf(ind);
+        if (i == -1) throw new Error('index not found');
+        return i;
+    }
+
     removeCol(col: number) {
         this.matrix.removeCol(col);
         this.head.splice(col, 1);
     }
 
-    pushLog(matrix: FractMatrix, select?: number[]) {
+    /**
+     * Печатает матрицу с именами строк и столбцов, и выделяет элемент или всю строку
+     * @param matrix
+     * @param select
+     * @param text
+     */
+    pushLog(matrix: FractMatrix, select?: number[], text?: string) {
         this.debug.push({
             m: new MatrixM(matrix),
             p: [copyArr(this.head), copyArr(this.left)],
-            select: select || null
+            select: select || null,
+            text: text || null
         });
     }
 }

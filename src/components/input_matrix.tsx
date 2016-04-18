@@ -104,9 +104,13 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
     }
 
     rowPoly() {
-        return this.state.polynom.map((el, index) => {
-            return <input type="text" key={index} value={el} onChange={this.onPolynomChange.bind(this, index)}/>
-        });
+        return (
+            <div key={this.state.polynom.length}>{
+                this.state.polynom.map((el, index) => {
+                    return <input type="text" key={index} value={el} onChange={this.onPolynomChange.bind(this, index)}/>
+                })
+            }</div>
+        );
     }
 
     row_render(row: Fraction[], index) {
@@ -129,12 +133,12 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         return (
             <div>
-                <div>{this.rowPoly()}</div>
+                {this.rowPoly()}
                 size
                 <input type="text" value={this.state.height} onChange={this.setSize('height').bind(this)}/>x
                 <input type="text" value={this.state.width} onChange={this.setSize('width').bind(this)}/>
                 {matrix_comp}
-                <button onClick={this.verify.bind(this)}>gauss</button>
+                <button onClick={this.verify.bind(this)}>calc</button>
             </div>
         )
     }
