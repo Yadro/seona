@@ -61,6 +61,7 @@ export class Simplex {
 
             this.pushLog(this.matrix.matrix, [], 'Конец вычислений');
         }
+        this.print();
         this.lastStep();
         this.pushLog(this.matrix.matrix);
     }
@@ -190,6 +191,28 @@ export class Simplex {
             x: x,
             y: minId
         }
+    }
+
+    print() {
+        let obj = {};
+        let txt = '';
+        let mtx = this.matrix.matrix;
+        this.left.forEach((e, i) => {
+            txt += `\nx${e} = `;
+            let xe = `x${e}`;
+            obj[xe] = '';
+            for (var j = 0; j < this.matrix.width - 1; j++) {
+                let multipler = `${mtx[i][j].neg().toFraction()}*x${this.head[j]} + `;
+                obj[xe] += multipler;
+                txt += multipler;
+            }
+            let mul = `${mtx[i][this.matrix.width - 1].toFraction()}`;
+            txt += mul;
+            obj[xe] += mul;
+        });
+        console.log(txt);
+        console.log(obj);
+        return txt;
     }
 
     /**
