@@ -7,7 +7,7 @@ import {InputMatrix} from 'components/input_matrix'
 import {MatrixM} from 'helper/matrix';
 import Fraction = require('fraction');
 import {Graph} from './components/graph';
-import {SimplexC} from './components/simplexComponent'
+import {SimplexMatrix} from './components/simplexMatrix'
 import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
 
@@ -15,6 +15,7 @@ interface AppS {
     matrix: MatrixM;
     simplex;
     log;
+    bystep;
 }
 
 class App extends React.Component<any, AppS> {
@@ -24,12 +25,13 @@ class App extends React.Component<any, AppS> {
         this.state = {
             matrix: null,
             simplex: null,
-            log: []
+            log: [],
+            bystep: false
         };
     }
 
     calc(matrix, polynom) {
-        let simplex = new Simplex(polynom, matrix);
+        let simplex = new Simplex(polynom, matrix, this.state.bystep);
         simplex.calc();
 
         this.setState({
@@ -44,6 +46,10 @@ class App extends React.Component<any, AppS> {
         this.setState({matrix: matrix});*/
     }
 
+    onClickCheckbox(e) {
+        this.setState({bystep: e.target.checked} as AppS);
+    }
+
     render() {
         /*
          <h1>Just apply Gauss it</h1>
@@ -53,7 +59,11 @@ class App extends React.Component<any, AppS> {
         return (
             <div>
                 <InputMatrix callback={this.calc.bind(this)}/>
-                <SimplexC log={this.state.log}/>
+                <span>
+                    <input id="checkbox" type="checkbox" onChange={this.onClickCheckbox.bind(this)}/>
+                    <label htmlFor="checkbox">по шагам</label>
+                </span>
+                <SimplexMatrix log={this.state.log}/>
             </div>
         )
     }

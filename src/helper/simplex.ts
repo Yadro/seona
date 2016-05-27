@@ -4,7 +4,8 @@ import {FractionType} from 'fraction.js';
 import {copyArr, getLastItem, getArrIndex} from "./tools";
 
 export class Simplex {
-    
+    /** по шагам */
+    bystep: boolean;
     polynom: FractionType[];
     matrix: MatrixM;
     debug: {
@@ -21,9 +22,11 @@ export class Simplex {
     /**
      * @param polynom
      * @param matrix матрица
+     * @param bystep
      */
-    constructor(polynom: number[], matrix: MatrixM) {
+    constructor(polynom: number[], matrix: MatrixM, bystep: boolean) {
         console.clear();
+        this.bystep = bystep;
         this.polynom = polynom.map((e) => new Fraction(e));
         this.matrix = matrix;
         this.head = getArrIndex(1, matrix.width - 1);

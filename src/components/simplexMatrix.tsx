@@ -6,7 +6,10 @@ interface SimplexP {
     log: any[];
 }
 
-export class SimplexC extends React.Component<SimplexP, any> {
+/**
+ * Отображение матрицы
+ */
+export class SimplexMatrix extends React.Component<SimplexP, any> {
 
     constructor(props) {
         super(props);
