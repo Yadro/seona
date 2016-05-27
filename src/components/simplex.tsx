@@ -50,6 +50,7 @@ function matrixToHtml(params, className?) {
                 row.push(<td key="0">{"x" + (left[i])}</td>);
             }
 
+            let className = '';
             // остальные элементы
             for (let j = 0; j < matrix.width; j++) {
                 if (select && select[0] == i && select[1] == j) {
@@ -60,10 +61,9 @@ function matrixToHtml(params, className?) {
             }
 
             if (select && select[0] == i && select[1] == -1) {
-                table.push(<tr key={i} className="select">{row}</tr>);
-            } else {
-                table.push(<tr key={i}>{row}</tr>);
+                className = 'select';
             }
+            table.push(<tr key={i} className={className}>{row}</tr>);
         }
         tableEl = (
             <table className={className ? className : ''}>

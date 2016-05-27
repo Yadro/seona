@@ -27,6 +27,28 @@ export function createMatrix(w: number, h: number) {
     return matrix;
 }
 
+export function changeSizeMatrix(matrix: any[][], size: number[]) {
+    const width = size[0];
+    const height = size[1];
+    if (height > matrix.length) {
+        for (let i = matrix.length; i < height; i++) {
+            matrix.push([]);
+        }
+    } else {
+        matrix.length = height;
+    }
+    matrix.map((row) => {
+        if (width > row.length) {
+            for (let i = row.length; i < width; i++) {
+                row.push(null);
+            }
+        } else {
+            row.length = width;
+        }
+        return row;
+    });
+    return matrix;
+}
 
 export function getArrIndex(from: number, to: number): number[] {
     let arr = [];

@@ -33,19 +33,15 @@ export class Simplex {
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
 
-    private addLastRow() {
-        let {matrix: mtx, height, width} = this.matrix;
-        let row = new Array(width);
-
-        for (let j = 0; j < width; j++) {
-            row[j] = 0;
-            for (let i = 0; i < height; i++) {
-                row[j] += mtx[i][j];
-            }
-        }
-        row = row.map(e => new Fraction(-e));
-        this.matrix.pushRow(row);
+    nextStep() {
+        
     }
+
+    swapStep(reference) {
+        this.swap(reference.x, reference.y);
+        this.removeCol(reference.x);
+    }
+
 
     /**
      * рассчеты
@@ -237,7 +233,21 @@ export class Simplex {
         return i;
     }
 
-    removeCol(col: number) {
+    private addLastRow() {
+        let {matrix: mtx, height, width} = this.matrix;
+        let row = new Array(width);
+
+        for (let j = 0; j < width; j++) {
+            row[j] = 0;
+            for (let i = 0; i < height; i++) {
+                row[j] += mtx[i][j];
+            }
+        }
+        row = row.map(e => new Fraction(-e));
+        this.matrix.pushRow(row);
+    }
+
+    private removeCol(col: number) {
         this.matrix.removeCol(col);
         this.head.splice(col, 1);
     }

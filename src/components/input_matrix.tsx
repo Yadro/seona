@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Fraction = require('../../node_modules/fraction.js/fraction');
 import {MatrixM} from "../helper/matrix";
-import {createMatrix, createArray} from  '../helper/tools';
+import {createMatrix, createArray, changeSizeMatrix} from  '../helper/tools';
 
 interface InputMatrixP {
     callback: (matr, polynom) => any;
@@ -49,7 +49,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
     onChange(el, e) {
         const value = e.target.value;
         let matrix = this.state.matrix;
-        let pos = el.split(',');
+        const pos = el.split(',');
         const i = +pos[0], j = +pos[1];
 
         if (pos.length == 2 && matrix[i] != null && matrix[i][j] != null) {
@@ -67,7 +67,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
     setSize(rot: 'width' | 'height', e) {
         let obj = {};
-        const {height, width} = this.state;
+        const {height, width, matrix} = this.state;
         let size = [width, height];
         let setSize = +e.target.value;
         if (setSize > 0 && setSize <= 16) {
@@ -77,7 +77,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             } else {
                 size[1] = setSize;
             }
-            obj['matrix'] = createMatrix(size[0], size[1]);
+            obj['matrix'] = changeSizeMatrix(matrix, size);
             obj['polynom'] = createArray(size[0]);
             this.setState(obj as InputMatrixS);
         }
