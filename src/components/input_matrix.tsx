@@ -65,20 +65,21 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         this.setState({polynom} as InputMatrixS);
     }
 
-    setSize(rot: 'width' | 'height') {
+    setSize(rot: 'width' | 'height', e) {
         let obj = {};
-        return (e) => {
-            let size = +e.target.value;
-            if (size > 0 && size <= 16) {
-                obj[rot] = size;
-                if (rot == 'width') {
-                    obj['matrix'] = createMatrix(size, this.state.height);
-                } else {
-                    obj['matrix'] = createMatrix(this.state.width, size);
-                }
-                obj['polynom'] = createArray(this.state.width);
-                this.setState(obj as InputMatrixS);
+        const {height, width} = this.state;
+        let size = [width, height];
+        let setSize = +e.target.value;
+        if (setSize > 0 && setSize <= 16) {
+            obj[rot] = setSize;
+            if (rot == 'width') {
+                size[0] = setSize;
+            } else {
+                size[1] = setSize;
             }
+            obj['matrix'] = createMatrix(size[0], size[1]);
+            obj['polynom'] = createArray(size[0]);
+            this.setState(obj as InputMatrixS);
         }
     };
 
@@ -138,8 +139,8 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             <div>
                 {this.rowPoly()}
                 size
-                <input type="text" value={this.state.height} onChange={this.setSize('height').bind(this)}/>x
-                <input type="text" value={this.state.width} onChange={this.setSize('width').bind(this)}/>
+                <input type="text" value={this.state.height} onChange={this.setSize.bind(this, 'height')}/>x
+                <input type="text" value={this.state.width} onChange={this.setSize.bind(this, 'width')}/>
                 {matrixComp}
                 <button onClick={this.verify.bind(this)}>calc</button>
             </div>
