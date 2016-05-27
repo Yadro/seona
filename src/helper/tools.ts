@@ -40,7 +40,7 @@ export function changeSizeMatrix(matrix: any[][], size: number[]) {
     matrix.map((row) => {
         if (width > row.length) {
             for (let i = row.length; i < width; i++) {
-                row.push(null);
+                row.push('');
             }
         } else {
             row.length = width;

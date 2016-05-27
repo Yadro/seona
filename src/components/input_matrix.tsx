@@ -52,9 +52,11 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         const pos = el.split(',');
         const i = +pos[0], j = +pos[1];
 
-        if (pos.length == 2 && matrix[i] != null && matrix[i][j] != null) {
+        if (pos.length == 2 && i < matrix.length && j < matrix[i].length) {
             matrix[i][j] = value;
             this.setState({matrix} as InputMatrixS);
+        } else {
+            throw new Error("Ошибка ввода параметра матрицы");
         }
     }
 
@@ -111,9 +113,10 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         const polynom = this.state.polynom;
         return (
             <div key={polynom.length}>{
-                polynom.map((el, index) => {
-                    return <input type="text" key={index} value={el} onChange={this.onPolynomChange.bind(this, index)}/>
-                })
+                polynom.map((el, index) => (
+                    <input type="text" key={index} value={el}
+                           onChange={this.onPolynomChange.bind(this, index)}/>
+                ))
             }</div>
         );
     }
