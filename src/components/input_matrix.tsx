@@ -82,6 +82,9 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         }
     };
 
+    /**
+     * сохраняем матрицу и полином
+     */
     verify() {
         const {matrix, polynom} = this.state;
         let matrixFract = [];
@@ -104,32 +107,32 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
     }
 
     rowPoly() {
+        const polynom = this.state.polynom;
         return (
-            <div key={this.state.polynom.length}>{
-                this.state.polynom.map((el, index) => {
+            <div key={polynom.length}>{
+                polynom.map((el, index) => {
                     return <input type="text" key={index} value={el} onChange={this.onPolynomChange.bind(this, index)}/>
                 })
             }</div>
         );
     }
 
-    row_render(row: Fraction[], index) {
+    rowRender(row: Fraction[], index) {
         let i = 0;
-        return row.map(el => {
-            return (<input type="text" key={i} value={el} onChange={this.onChange.bind(this, index + ',' + i++)}/>)
-        })
+        return row.map(el => (
+            <input type="text" key={i} value={el}
+                   onChange={this.onChange.bind(this, index + ',' + i++)}/>)
+        );
     }
 
     render() {
-        let i = 0, matrix = this.state.matrix;
-
-        let matrix_comp = matrix.map((row) => {
-            return (
-                <div key={i}>
-                    {this.row_render(row, i++)}
-                </div>
-            )
-        });
+        let i = 0;
+        const matrix = this.state.matrix;
+        const matrixComp = matrix.map((row) => (
+            <div key={i}>
+                {this.rowRender(row, i++)}
+            </div>
+        ));
 
         return (
             <div>
@@ -137,7 +140,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
                 size
                 <input type="text" value={this.state.height} onChange={this.setSize('height').bind(this)}/>x
                 <input type="text" value={this.state.width} onChange={this.setSize('width').bind(this)}/>
-                {matrix_comp}
+                {matrixComp}
                 <button onClick={this.verify.bind(this)}>calc</button>
             </div>
         )
