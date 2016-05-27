@@ -7,7 +7,7 @@ import {InputMatrix} from 'components/input_matrix'
 import {MatrixM} from 'helper/matrix';
 import Fraction = require('fraction');
 import {Graph} from './components/graph';
-import {SimplexC} from './components/simplex'
+import {SimplexC} from './components/simplexComponent'
 import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
 
