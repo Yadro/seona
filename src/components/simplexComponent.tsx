@@ -16,9 +16,7 @@ export class SimplexC extends React.Component<SimplexP, any> {
     render() {
         let log = this.props.log.map((e, i) => <div key={i}>{matrixToHtml(e, 'simplex')}</div>);
         return (
-            <div>
-                <div>{log}</div>
-            </div>
+            <div>{log}</div>
         )
     }
 }

@@ -28,7 +28,7 @@ class App extends React.Component<any, AppS> {
         };
     }
 
-    callback(matrix, polynom) {
+    calc(matrix, polynom) {
         let simplex = new Simplex(polynom, matrix);
         simplex.calc();
 
@@ -52,7 +52,7 @@ class App extends React.Component<any, AppS> {
         */
         return (
             <div>
-                <InputMatrix callback={this.callback.bind(this)}/>
+                <InputMatrix callback={this.calc.bind(this)}/>
                 <SimplexC log={this.state.log}/>
             </div>
         )
