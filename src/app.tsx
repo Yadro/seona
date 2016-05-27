@@ -20,6 +20,8 @@ interface AppS {
 
 class App extends React.Component<any, AppS> {
 
+    simplex: Simplex;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -31,13 +33,8 @@ class App extends React.Component<any, AppS> {
     }
 
     calc(matrix, polynom) {
-        let simplex = new Simplex(polynom, matrix, this.state.bystep);
-        simplex.calc();
-
-        this.setState({
-            matrix: matrix,
-            log: simplex.debug
-        } as AppS);
+        this.simplex = new Simplex(polynom, matrix, this.state.bystep);
+        this.setState({log: this.simplex.debug} as AppS);
         
         /*
         let m = matrix.gaussSelect(true, [0, 4, 6]);
@@ -46,6 +43,20 @@ class App extends React.Component<any, AppS> {
         this.setState({matrix: matrix});*/
     }
 
+    onPrew() {
+        this.simplex.prew();
+    }
+    
+    onNext() {
+        this.simplex.next();
+        this.setState({log: this.simplex.debug} as AppS);
+    }
+
+    selectReference() {
+        this.simplex.next();
+        this.setState({log: this.simplex.debug} as AppS);
+    }
+    
     onClickCheckbox(e) {
         this.setState({bystep: e.target.checked} as AppS);
     }
@@ -63,7 +74,9 @@ class App extends React.Component<any, AppS> {
                     <input id="checkbox" type="checkbox" onChange={this.onClickCheckbox.bind(this)}/>
                     <label htmlFor="checkbox">по шагам</label>
                 </span>
-                <SimplexMatrix log={this.state.log}/>
+                <SimplexMatrix log={this.state.log} touchableLastMatrix={true}/>
+                <button onClick={this.onPrew.bind(this)}>prew</button>
+                <button onClick={this.onNext.bind(this)}>next</button>
             </div>
         )
     }

@@ -4,6 +4,7 @@ import * as React from 'react';
 
 interface SimplexP {
     log: any[];
+    touchableLastMatrix: boolean;
 }
 
 /**
@@ -13,18 +14,24 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
 
     constructor(props) {
         super(props);
-        this.state = {};
     }
 
     render() {
-        let log = this.props.log.map((e, i) => <div key={i}>{matrixToHtml(e, 'simplex')}</div>);
+        const touchable = this.props.touchableLastMatrix;
+        const _log = this.props.log;
+        const len = _log.length - 1;
+        const log = _log.map((e, i) => (
+            <div key={i}>
+                {matrixToHtml(e, (touchable && i === len), 'simplex')}
+            </div>
+        ));
         return (
             <div>{log}</div>
         )
     }
 }
 
-function matrixToHtml(params, className?) {
+function matrixToHtml(params, touchable?: boolean, className?) {
     let tableEl = null;
     if (params.m && params.p) {
         let matrix = params.m,
@@ -77,6 +84,7 @@ function matrixToHtml(params, className?) {
         <div>
             {params.text ? <div>{params.text}</div> : ''}
             {tableEl}
+            {touchable ? 'last' : 'no last'}
         </div>
     )
 }

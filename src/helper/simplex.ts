@@ -36,11 +36,19 @@ export class Simplex {
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
 
-    nextStep() {
-        
+    prew() {
+
     }
 
-    swapStep(reference) {
+    next(position?) {
+        if (typeof position === 'undefined') {
+            position = this.findReference();
+            console.log(position);
+        }
+        this.swapAndRemove(position);
+    }
+
+    swapAndRemove(reference) {
         this.swap(reference.x, reference.y);
         this.removeCol(reference.x);
     }

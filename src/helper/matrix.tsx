@@ -50,7 +50,7 @@ function copyMatrix(matr) {
     matr.forEach((row, i) => {
         matrix.push([]);
         row.forEach(el => {
-            matrix[i].push(el);
+            matrix[i].push({matrix: el});
         });
     });
     return matrix;
@@ -406,7 +406,7 @@ export class MatrixM {
         this.matrix.forEach((r, i) => {
             matrix.push([]);
             r.forEach(e => {
-                matrix[i].push(e.clone());
+                matrix[i].push({matrix: e.clone()});
             })
         });
         return new MatrixM(matrix);
@@ -433,9 +433,9 @@ export class MatrixM {
             m.push([]);
             row.forEach((el: FractionType) => {
                 if (el.d == 1) {
-                    m[i].push(+el.toFraction());
+                    m[i].push({matrix: +el.toFraction()});
                 } else {
-                    m[i].push(el.toFraction());
+                    m[i].push({matrix: el.toFraction()});
                 }
             });
         });

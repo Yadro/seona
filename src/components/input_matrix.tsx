@@ -96,7 +96,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             matrixFract.push([]);
             row.forEach((el, j) => {
                 try {
-                    matrixFract[i].push(new Fraction(el));
+                    matrixFract[i].push({matrix: new Fraction(el)});
                 } catch (e) {
                     console.error(i + " " + j, e);
                 }
