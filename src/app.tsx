@@ -67,8 +67,12 @@ class App extends React.Component<any, AppS> {
             throw new Error('SimplexMatrix: incorrect matrix element');
         }
         const pos_ = pos.map(el => +el);
-        this.simplex.next(pos_);
-        this.setState({log: this.simplex.debug} as AppS);
+        try {
+            this.simplex.next(pos_);
+            this.setState({log: this.simplex.debug} as AppS);
+        } catch (err) {
+            console.error(err);
+        }
     }
     
     onClickCheckbox(e) {

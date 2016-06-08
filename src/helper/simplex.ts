@@ -60,6 +60,10 @@ export class Simplex {
                 x: position[1]
             }
         }
+        let el = this.matrix.getElem(pos.x, pos.y);
+        if (!el || el.n == 0) {
+            throw new Error('Simplex: reference element is zero');
+        }
         console.log(pos);
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix);
@@ -199,7 +203,7 @@ export class Simplex {
     findReference() {
         const this_matrix = this.matrix;
         let matrix = this_matrix.matrix;
-        
+
         // todo проверить есть ли отриц элементы
         let x = getIndMaxEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
 

@@ -80,6 +80,10 @@ export class MatrixM {
         this.height = matrix.length;
         this.width = matrix[0].length;
     }
+    
+    getElem(x, y) {
+        return this.matrix[y][x];
+    }
 
     getRow(row): FractionType[] {
         if (row > this.height - 1) throw new Error('getRow index out of bound');
