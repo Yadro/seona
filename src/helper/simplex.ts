@@ -62,6 +62,7 @@ export class Simplex {
         }
         console.log(pos);
         this.oneStep(pos);
+        this.pushLog(this.matrix.matrix);
     }
 
     /**
@@ -193,7 +194,7 @@ export class Simplex {
 
     /**
      * Поиск опорного элемента
-     * @returns {{k: number, s: number}}
+     * @returns {{x: number, y: number}}
      */
     findReference() {
         let matrix = this.matrix.matrix;
@@ -210,9 +211,7 @@ export class Simplex {
         let minId = i;
         for (; i < this.matrix.height - 1; i++) {
             if (matrix[i][x].s == -1) continue;
-
             let el = lastCol[i].div(matrix[i][x]);
-
             if (el.compare(minEl) < 0) {
                 minEl = el;
                 minId = i;
