@@ -91,7 +91,7 @@ export class Simplex {
             this.swap(opor.x, opor.y);
             this.removeCol(opor.x);
 
-            this.pushLog(this.matrix.matrix, [], 'Конец вычислений');
+            this.pushLog(this.matrix.matrix, [], 'Конец вычислений:');
         }
         this.print();
         this.lastStep();
@@ -155,7 +155,7 @@ export class Simplex {
 
         console.log("element: "  +ks.toFraction());
         matrixInst.log();
-        this.pushLog(matrix, [y, x], 'Находим опорный элемент');
+        this.pushLog(matrix, [y, x], 'Находим опорный элемент:');
 
         let buf = this.head[x];
         this.head[x] = this.left[y];
@@ -173,7 +173,7 @@ export class Simplex {
 
         if (debugConf.debugRowCol) {
             matrixInst.log();
-            this.pushLog(matrix, [y, x], 'Вычисляем строку и колонку');
+            this.pushLog(matrix, [y, x], 'Вычисляем строку и колонку:');
         }
 
         // вычисляем остальные строки
@@ -188,7 +188,7 @@ export class Simplex {
             }
             if (debugConf.debugRow) {
                 matrixInst.log();
-                this.pushLog(matrix, [i, -1], 'Вычитаем строку');
+                this.pushLog(matrix, [i, -1], 'Вычитаем строку:');
             }
         }
 

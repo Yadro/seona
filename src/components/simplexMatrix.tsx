@@ -87,7 +87,7 @@ function matrixToHtml(params, callback?: Function, className?) {
         <div>
             {params.text ? <div>{params.text}</div> : ''}
             {tableEl}
-            {callback ? 'last' : 'no last'}
+            {/*callback ? 'last' : 'no last'*/}
         </div>
     )
 }
