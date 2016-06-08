@@ -9,6 +9,9 @@
             width: 50px;
             margin: 3px;
         }
+        body, input, button {
+            font-family: monospace;
+        }
 
 
         table {
@@ -25,11 +28,26 @@
         table.simplex {
             border: none;
         }
+        table.touch tr td {
+            cursor: pointer;
+        }
+        table.touch tr td:first-of-type:hover,
+        table.touch tr td:last-of-type:hover,
+        table.touch tr:last-of-type td:hover {
+            background-color: aqua;
+        }
+        table.touch tr td:first-of-type,
+        table.touch tr td:last-of-type,
+        table.touch tr:last-of-type td {
+            cursor: default;
+        }
         table tr td.select {
-            background: #DADADA;
+            /*background: #DADADA;*/
+            background-color: #ff00ff;
         }
         table tr.select {
-            background: #DADADA;
+            /*background: #DADADA;*/
+            background-color: #ff00ff;
         }
         table.simplex td:last-child {
             border-left: 1px solid;

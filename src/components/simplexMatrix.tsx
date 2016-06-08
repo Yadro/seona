@@ -22,7 +22,8 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
         const len = _log.length - 1;
         const log = _log.map((e, i) => (
             <div key={i}>
-                {matrixToHtml(e, (callback && i === len) ? callback : null, 'simplex')}
+                {matrixToHtml(e, (callback && i === len) ? callback : null,
+                    'simplex' + ((callback && i === len) ? ' touch' : ''))}
             </div>
         ));
         return (
