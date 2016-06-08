@@ -197,19 +197,21 @@ export class Simplex {
      * @returns {{x: number, y: number}}
      */
     findReference() {
-        let matrix = this.matrix.matrix;
+        const this_matrix = this.matrix;
+        let matrix = this_matrix.matrix;
+        
         // todo проверить есть ли отриц элементы
-        let x = getIndMaxEl(this.matrix.getRow(this.matrix.height - 1).slice(0, this.matrix.width - 2));
+        let x = getIndMaxEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
 
         let i = 0;
-        while (i < this.matrix.height - 1 && matrix[i][x].s == -1) {
+        while (i < this_matrix.height - 1 && matrix[i][x].s == -1) {
             i++;
         }
 
-        let lastCol = this.matrix.getCol(this.matrix.width - 1);
+        let lastCol = this_matrix.getCol(this_matrix.width - 1);
         let minEl = lastCol[i].div(matrix[i][x]);
         let minId = i;
-        for (; i < this.matrix.height - 1; i++) {
+        for (; i < this_matrix.height - 1; i++) {
             if (matrix[i][x].s == -1) continue;
             let el = lastCol[i].div(matrix[i][x]);
             if (el.compare(minEl) < 0) {
