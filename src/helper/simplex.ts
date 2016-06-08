@@ -13,6 +13,7 @@ export class Simplex {
     /** по шагам */
     bystep: boolean;
     polynom: FractionType[];
+    originSize: number;
     matrix: MatrixM;
     debug: {
         m?: MatrixM;
@@ -34,6 +35,7 @@ export class Simplex {
         console.clear();
         this.bystep = bystep;
         this.polynom = polynom.map((e) => new Fraction(e));
+        this.originSize = polynom.length - 1;
         this.matrix = matrix;
         this.head = getArrIndex(1, matrix.width - 1);
         this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
@@ -67,6 +69,9 @@ export class Simplex {
         console.log(pos);
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix);
+        if (this.matrix.height + this.matrix.width - 2 === this.originSize) {
+            this.lastStep();
+        }
     }
 
     /**

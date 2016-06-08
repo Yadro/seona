@@ -41,6 +41,7 @@ class App extends React.Component<any, AppS> {
             this.simplex.calc();
         }
         this.setState({
+            simplex: this.simplex,
             log: this.simplex.debug,
             oninput: false
         } as AppS);
@@ -94,7 +95,9 @@ class App extends React.Component<any, AppS> {
                         <label htmlFor="checkbox">по шагам</label>
                     </span> : null}
 
-                <SimplexMatrix log={this.state.log} callback={this.selectReference.bind(this)}/>
+                <SimplexMatrix log={this.state.log}
+                               callback={this.selectReference.bind(this)}
+                               lastIsTouchable="false"/>
                 {!this.state.oninput ?
                     <span>
                         <button onClick={this.onPrev.bind(this)}>prev</button>
