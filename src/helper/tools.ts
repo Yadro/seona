@@ -58,6 +58,12 @@ export function getArrIndex(from: number, to: number): number[] {
     return arr;
 }
 
+/**
+ * Создает копию массива либо создает через функцию copy
+ * @param arr
+ * @param copy
+ * @returns {T[]}
+ */
 export function copyArr<T>(arr: T[], copy?: (elem: T) => T): T[] {
     if (copy) {
         return arr.map((e) => {

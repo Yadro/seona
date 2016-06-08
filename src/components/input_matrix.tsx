@@ -18,6 +18,7 @@ interface InputMatrixS {
 
 /**
  * Класс рисующий поля для ввода коэффициентов матрицы
+ * Также сохраняет и восстанавливает её из localStorage
  */
 export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
@@ -96,7 +97,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             matrixFract.push([]);
             row.forEach((el, j) => {
                 try {
-                    matrixFract[i].push({matrix: new Fraction(el)});
+                    matrixFract[i].push(new Fraction(el));
                 } catch (e) {
                     console.error(i + " " + j, e);
                 }

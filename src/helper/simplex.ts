@@ -3,6 +3,12 @@ import Fraction = require('fraction');
 import {FractionType} from 'fraction.js';
 import {copyArr, getLastItem, getArrIndex} from "./tools";
 
+const debugConf = {
+    debug: true,
+    debugRowCol: false,
+    debugRow: false
+};
+
 export class Simplex {
     /** по шагам */
     bystep: boolean;
@@ -36,7 +42,7 @@ export class Simplex {
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
 
-    prew() {
+    prev() {
 
     }
 
@@ -146,8 +152,10 @@ export class Simplex {
         }
         matrix[y][x] = new Fraction(1).div(ks);
 
-        matrixInst.log();
-        this.pushLog(matrix, [y, x], 'Вычисляем строку и колонку');
+        if (debugConf.debugRowCol) {
+            matrixInst.log();
+            this.pushLog(matrix, [y, x], 'Вычисляем строку и колонку');
+        }
 
         // вычисляем остальные строки
         let oporaRow = matrixInst.getRow(y);
@@ -159,8 +167,10 @@ export class Simplex {
                 if (j == x) continue;
                 matrix[i][j] = origMatrix[i][j].sub(koeff.mul(oporaRow[j]));
             }
-            matrixInst.log();
-            this.pushLog(matrix, [i, -1], 'Вычитаем строку');
+            if (debugConf.debugRow) {
+                matrixInst.log();
+                this.pushLog(matrix, [i, -1], 'Вычитаем строку');
+            }
         }
 
         this.matrix = matrixInst;

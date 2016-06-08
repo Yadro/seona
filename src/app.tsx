@@ -43,8 +43,8 @@ class App extends React.Component<any, AppS> {
         this.setState({matrix: matrix});*/
     }
 
-    onPrew() {
-        this.simplex.prew();
+    onPrev() {
+        this.simplex.prev();
     }
     
     onNext() {
@@ -52,8 +52,8 @@ class App extends React.Component<any, AppS> {
         this.setState({log: this.simplex.debug} as AppS);
     }
 
-    selectReference() {
-        this.simplex.next();
+    selectReference(e) {
+        this.simplex.next(e);
         this.setState({log: this.simplex.debug} as AppS);
     }
     
@@ -75,7 +75,7 @@ class App extends React.Component<any, AppS> {
                     <label htmlFor="checkbox">по шагам</label>
                 </span>
                 <SimplexMatrix log={this.state.log} touchableLastMatrix={true}/>
-                <button onClick={this.onPrew.bind(this)}>prew</button>
+                <button onClick={this.onPrev.bind(this)}>prev</button>
                 <button onClick={this.onNext.bind(this)}>next</button>
             </div>
         )
