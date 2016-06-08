@@ -51,11 +51,17 @@ export class Simplex {
      * @param position
      */
     next(position?) {
+        let pos;
         if (typeof position === 'undefined') {
-            position = this.findReference();
-            console.log(position);
+            pos = this.findReference();
+        } else {
+            pos = {
+                y: position[0],
+                x: position[1]
+            }
         }
-        this.oneStep(position);
+        console.log(pos);
+        this.oneStep(pos);
     }
 
     /**
@@ -66,7 +72,7 @@ export class Simplex {
         this.swap(reference.x, reference.y);
         this.removeCol(reference.x);
     }
-
+    
 
     /**
      * автоматическое вычисление и вывод результата

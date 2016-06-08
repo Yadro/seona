@@ -4,7 +4,7 @@ import * as React from 'react';
 
 interface SimplexP {
     log: any[];
-    touchableLastMatrix: boolean;
+    callback: (pos) => any;
 }
 
 /**
@@ -17,12 +17,12 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
     }
 
     render() {
-        const touchable = this.props.touchableLastMatrix;
+        const callback = this.props.callback;
         const _log = this.props.log;
         const len = _log.length - 1;
         const log = _log.map((e, i) => (
             <div key={i}>
-                {matrixToHtml(e, (touchable && i === len), 'simplex')}
+                {matrixToHtml(e, (callback && i === len) ? callback : null, 'simplex')}
             </div>
         ));
         return (
@@ -31,7 +31,7 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
     }
 }
 
-function matrixToHtml(params, touchable?: boolean, className?) {
+function matrixToHtml(params, callback?: Function, className?) {
     let tableEl = null;
     if (params.m && params.p) {
         let matrix = params.m,
@@ -58,19 +58,18 @@ function matrixToHtml(params, touchable?: boolean, className?) {
                 row.push(<td key="0">{"x" + (left[i])}</td>);
             }
 
-            let className = '';
             // остальные элементы
             for (let j = 0; j < matrix.width; j++) {
-                if (select && select[0] == i && select[1] == j) {
-                    row.push(<td key={j+1} className="select">{matrix.matrix[i][j].toFraction()}</td>);
-                } else {
-                    row.push(<td key={j+1}>{matrix.matrix[i][j].toFraction()}</td>);
-                }
+                let className = (select && select[0] == i && select[1] == j) ? 'select' : '';
+                let touchable = callback && i < matrix.height - 1 && j < matrix.width - 1;
+                row.push(
+                    <td key={j+1} className={className}
+                        onClick={touchable ? callback.bind(null, `${i}x${j}`) : null}>
+                        {matrix.matrix[i][j].toFraction()}
+                    </td>
+                );
             }
-
-            if (select && select[0] == i && select[1] == -1) {
-                className = 'select';
-            }
+            let className = (select && select[0] == i && select[1] == -1) ? 'select' : '';
             table.push(<tr key={i} className={className}>{row}</tr>);
         }
         tableEl = (
@@ -84,7 +83,7 @@ function matrixToHtml(params, touchable?: boolean, className?) {
         <div>
             {params.text ? <div>{params.text}</div> : ''}
             {tableEl}
-            {/*touchable ? 'last' : 'no last'*/}
+            {callback ? 'last' : 'no last'}
         </div>
     )
 }

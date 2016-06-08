@@ -61,8 +61,13 @@ class App extends React.Component<any, AppS> {
         this.setState({log: this.simplex.debug} as AppS);
     }
 
-    selectReference(e) {
-        this.simplex.next(e);
+    selectReference(e: string) {
+        const pos = e.split('x');
+        if (pos.length != 2) {
+            throw new Error('SimplexMatrix: incorrect matrix element');
+        }
+        const pos_ = pos.map(el => +el);
+        this.simplex.next(pos_);
         this.setState({log: this.simplex.debug} as AppS);
     }
     
@@ -85,7 +90,7 @@ class App extends React.Component<any, AppS> {
                         <label htmlFor="checkbox">по шагам</label>
                     </span> : null}
 
-                <SimplexMatrix log={this.state.log} touchableLastMatrix={true}/>
+                <SimplexMatrix log={this.state.log} callback={this.selectReference.bind(this)}/>
                 {!this.state.oninput ?
                     <span>
                         <button onClick={this.onPrev.bind(this)}>prev</button>
