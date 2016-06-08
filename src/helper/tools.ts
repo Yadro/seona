@@ -21,7 +21,7 @@ export function createMatrix(w: number, h: number) {
     for (let i = 0; i < h; i++) {
         matrix[i] = [];
         for (let j = 0; j < w; j++) {
-            matrix[i].push({matrix: ''});
+            matrix[i].push('');
         }
     }
     return matrix;

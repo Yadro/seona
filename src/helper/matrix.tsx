@@ -65,7 +65,7 @@ export class MatrixM {
 
     constructor(matrix: FractionType[][] | number[][]) {
         if (!matrix[0].length) {
-            throw new Error('matrix is not matrix')
+            throw new Error('matrix is not correct')
         }
         this.matrix = [];
         if (typeof matrix[0][0] != "object") {
