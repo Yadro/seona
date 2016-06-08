@@ -22,8 +22,7 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
         const len = _log.length - 1;
         const log = _log.map((e, i) => (
             <div key={i}>
-                {matrixToHtml(e, (callback && i === len) ? callback : null,
-                    'simplex' + ((callback && i === len) ? ' touch' : ''))}
+                {matrixToHtml(e, (callback && i === len) ? callback : null, 'simplex')}
             </div>
         ));
         return (
@@ -63,8 +62,12 @@ function matrixToHtml(params, callback?: Function, className?) {
             for (let j = 0; j < matrix.width; j++) {
                 let className = (select && select[0] == i && select[1] == j) ? 'select' : '';
                 let touchable = callback && i < matrix.height - 1 && j < matrix.width - 1;
+                if (touchable) {
+                    className += ' touch';
+                }
                 row.push(
-                    <td key={j+1} className={className}
+                    <td key={j+1}
+                        className={className}
                         onClick={touchable ? callback.bind(null, `${i}x${j}`) : null}>
                         {matrix.matrix[i][j].toFraction()}
                     </td>
