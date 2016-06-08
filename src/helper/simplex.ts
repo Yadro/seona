@@ -46,22 +46,30 @@ export class Simplex {
 
     }
 
+    /**
+     * пошаговое вычисление
+     * @param position
+     */
     next(position?) {
         if (typeof position === 'undefined') {
             position = this.findReference();
             console.log(position);
         }
-        this.swapAndRemove(position);
+        this.oneStep(position);
     }
 
-    swapAndRemove(reference) {
+    /**
+     * один шаг вычисления таблицы
+     * @param reference
+     */
+    oneStep(reference) {
         this.swap(reference.x, reference.y);
         this.removeCol(reference.x);
     }
 
 
     /**
-     * рассчеты
+     * автоматическое вычисление и вывод результата
      */
     calc() {
         let l = this.matrix.height - 1;
