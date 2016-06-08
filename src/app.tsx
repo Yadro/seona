@@ -16,6 +16,7 @@ interface AppS {
     simplex;
     log;
     bystep;
+    oninput;
 }
 
 class App extends React.Component<any, AppS> {
@@ -28,13 +29,21 @@ class App extends React.Component<any, AppS> {
             matrix: null,
             simplex: null,
             log: [],
-            bystep: false
+            bystep: false,
+            oninput: true,
         };
     }
 
     calc(matrix, polynom) {
-        this.simplex = new Simplex(polynom, matrix, this.state.bystep);
-        this.setState({log: this.simplex.debug} as AppS);
+        const bystep = this.state.bystep;
+        this.simplex = new Simplex(polynom, matrix, bystep);
+        if (!bystep) {
+            this.simplex.calc();
+        }
+        this.setState({
+            log: this.simplex.debug,
+            oninput: false
+        } as AppS);
         
         /*
         let m = matrix.gaussSelect(true, [0, 4, 6]);
@@ -69,14 +78,19 @@ class App extends React.Component<any, AppS> {
         */
         return (
             <div>
-                <InputMatrix callback={this.calc.bind(this)}/>
-                <span>
-                    <input id="checkbox" type="checkbox" onChange={this.onClickCheckbox.bind(this)}/>
-                    <label htmlFor="checkbox">по шагам</label>
-                </span>
+                <InputMatrix callback={this.calc.bind(this)} showCalc={this.state.oninput}/>
+                {this.state.oninput ?
+                    <span>
+                        <input id="checkbox" type="checkbox" onChange={this.onClickCheckbox.bind(this)}/>
+                        <label htmlFor="checkbox">по шагам</label>
+                    </span> : null}
+
                 <SimplexMatrix log={this.state.log} touchableLastMatrix={true}/>
-                <button onClick={this.onPrev.bind(this)}>prev</button>
-                <button onClick={this.onNext.bind(this)}>next</button>
+                {!this.state.oninput ?
+                    <span>
+                        <button onClick={this.onPrev.bind(this)}>prev</button>
+                        <button onClick={this.onNext.bind(this)}>next</button>
+                    </span> : null}
             </div>
         )
     }

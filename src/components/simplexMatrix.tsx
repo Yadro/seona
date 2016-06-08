@@ -8,7 +8,7 @@ interface SimplexP {
 }
 
 /**
- * Отображение матрицы
+ * Класс отвечающий за распечатку матрицы
  */
 export class SimplexMatrix extends React.Component<SimplexP, any> {
 
@@ -84,7 +84,7 @@ function matrixToHtml(params, touchable?: boolean, className?) {
         <div>
             {params.text ? <div>{params.text}</div> : ''}
             {tableEl}
-            {touchable ? 'last' : 'no last'}
+            {/*touchable ? 'last' : 'no last'*/}
         </div>
     )
 }

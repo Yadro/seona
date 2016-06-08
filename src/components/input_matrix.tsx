@@ -7,6 +7,7 @@ import {createMatrix, createArray, changeSizeMatrix} from  '../helper/tools';
 
 interface InputMatrixP {
     callback: (matr, polynom) => any;
+    showCalc: boolean;
 }
 
 interface InputMatrixS {
@@ -141,12 +142,19 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         return (
             <div>
+                Polynom
                 {this.rowPoly()}
-                size
-                <input type="text" value={this.state.height} onChange={this.setSize.bind(this, 'height')}/>x
-                <input type="text" value={this.state.width} onChange={this.setSize.bind(this, 'width')}/>
+                Matrix size
+                <input type="text"
+                       value={this.state.height}
+                       onChange={this.setSize.bind(this, 'height')}/>x
+                <input type="text"
+                       value={this.state.width}
+                       onChange={this.setSize.bind(this, 'width')}/>
                 {matrixComp}
-                <button onClick={this.verify.bind(this)}>calc</button>
+                {this.props.showCalc ?
+                    <button onClick={this.verify.bind(this)}>calc</button>
+                    : null}
             </div>
         )
     }
