@@ -2,6 +2,7 @@ import {MatrixM, FractMatrix} from './matrix';
 import Fraction = require('fraction');
 import {FractionType} from 'fraction.js';
 import {copyArr, getLastItem, getArrIndex} from "./tools";
+import {PrintEquation} from "../components/printEquation";
 
 const debugConf = {
     debug: true,
@@ -158,12 +159,18 @@ export class Simplex {
     lastStepPrintKnownCoeff() {
         const matrix = this.matrix;
         this.left.forEach(k => {
-            let str = '';
+            let equation = new PrintEquation();
+            equation.push.x(k);
+            equation.push.sign(0);
             for (let i = 0; i < matrix.width; i++) {
                 let el = matrix.getElem(i, k);
-                str += ` + ${el.neg().toFraction()}x${i}`;
+                //str += ` + ${el.neg().toFraction()}x${i}`;
+                equation.push.sign(1);
+                equation.push.fraction(el);
+                equation.push.x(i);
             }
-            this.debug.push({text: `x${k} = ${str}`});
+            console.log(equation.equation);
+            this.debug.push({equation});
         });
     }
 

@@ -105,16 +105,19 @@ export default class PrintEquationComp extends React.Component<PrintEquationComp
     }
 }
 
-class PrintEquation extends React.Component{
-    equation: Equation[] = [
-        {x: 1},
-        {sign: 0},
-        {fraction: new Fraction(-1)},
-        {x: 2},
-        {sign: -1},
-        {fraction: new Fraction(-1)},
-        {x: 3},
-    ];
+export class PrintEquation {
+    equation: Equation[] = [];
+
+    constructor() {
+        this.equation = [];
+    }
+
+    push = {
+        x: this.pushX.bind(this),
+        sign: this.pushSign.bind(this),
+        word: this.pushWord.bind(this),
+        fraction: this.pushFraction.bind(this),
+    };
 
     pushX(num) {
         this.equation.push({x: num});

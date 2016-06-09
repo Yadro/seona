@@ -1,6 +1,7 @@
 ///<reference path="../../typings/main.d.ts"/>
 
 import * as React from 'react';
+import PrintEquationComp from "./printEquation";
 
 interface SimplexP {
     log: any[];
@@ -85,7 +86,10 @@ function matrixToHtml(params, callback?: Function, className?) {
     }
     return (
         <div>
-            {params.text ? <div>{params.text}</div> : ''}
+            {params.text ? <div>{params.text}</div> : null}
+            {params.equation ?
+                <PrintEquationComp equation={params.equation}/>
+                : null}
             {tableEl}
             {/*callback ? 'last' : 'no last'*/}
         </div>
