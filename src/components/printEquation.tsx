@@ -93,6 +93,10 @@ export default class PrintEquationComp extends React.Component<PrintEquationComp
                     }
                     fraction = fraction.neg();
                 }
+            } else if (last.hasOwnProperty('word') && fraction.s === -1) {
+                // ") -1" => ") - 1"
+                buf += " - ";
+                fraction = fraction.neg();
             }
             buf += fraction.toFraction();
         } else if (el.hasOwnProperty('word')) {
