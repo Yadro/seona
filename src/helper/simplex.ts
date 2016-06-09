@@ -247,7 +247,8 @@ export class Simplex {
             }
             equation.push.plus();
         });
-        this.debug.push({equation: this.polynomEquationAddMin(equation)});
+        equation.push.arrowMin();
+        this.debug.push({equation});
     }
 
     /**

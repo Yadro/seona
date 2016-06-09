@@ -170,6 +170,10 @@ export class PrintEquation {
                 this.equation.push(arr);
             }
             return this.push;
+        },
+        arrowMin: () => {
+            this.push.sign(4).word('min');
+            return this.push;
         }
     };
 
