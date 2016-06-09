@@ -6,25 +6,25 @@ import {FractionType} from "../helper/fraction.js";
 
 interface Equaltion {
     x?: number;
-    word?: number;
+    sign?: number;
     fraction?: FractionType;
 }
 export default class PrintEquationComp extends React.Component{
     equation: Equaltion[] = [
         {x: 1},
-        {word: 0},
+        {sign: 0},
 
-        {word: 1},
+        {sign: 1},
         {fraction: new Fraction(1,2)},
         {x: 1},
-        {word: 1},
+        {sign: 1},
         {fraction: new Fraction(-1,2)},
         {x: 2},
 
-        {word: -1},
+        {sign: -1},
         {fraction: new Fraction(1,2)},
         {x: 3},
-        {word: -1},
+        {sign: -1},
         {fraction: new Fraction(-1,2)},
         {x: 4},
     ];
@@ -42,15 +42,12 @@ export default class PrintEquationComp extends React.Component{
         let last: Equaltion = {};
         this.equation.forEach((el: any, idx) => {
             if (el.hasOwnProperty('x')) {
-                if (idx != 0) {
-                    //buf += ' ';
-                }
                 if (last.hasOwnProperty('fraction')) {
                     buf += '&middot;';
                 }
                 buf += 'x' + this.sub(el.x);
-            } else if (el.hasOwnProperty('word')) {
-                switch (el.word) {
+            } else if (el.hasOwnProperty('sign')) {
+                switch (el.sign) {
                     case 0:
                         buf += ' = ';
                         break;
@@ -63,11 +60,11 @@ export default class PrintEquationComp extends React.Component{
                 }
             } else if (el.hasOwnProperty('fraction')) {
                 let fraction = el.fraction;
-                if (last.hasOwnProperty('word') && last.word !== 0) {
+                if (last.hasOwnProperty('sign') && last.sign !== 0) {
                     // "- -1" or "+ -1"
                     if (fraction.s === -1) {
                         buf = buf.slice(0, buf.length - 2);
-                        if (fraction.s === last.word) {
+                        if (fraction.s === last.sign) {
                             // "- -1" => "+ 1"
                             buf += "+ ";
 
@@ -90,25 +87,25 @@ export default class PrintEquationComp extends React.Component{
 }
 
 class PrintEquation extends React.Component{
-    equation = [
+    equation: Equaltion[] = [
         {x: 1},
-        {word: 0},
+        {sign: 0},
         {fraction: new Fraction(-1)},
         {x: 2},
-        {word: -1},
+        {sign: -1},
         {fraction: new Fraction(-1)},
         {x: 3},
     ];
 
-    pushX() {
-        
+    pushX(num) {
+        this.equation.push({x: num});
     }
     
-    pushWord() {
-        
+    pushWord(sign) {
+        this.equation.push({sign});
     }
     
-    pushFraction() {
-        
+    pushFraction(fraction) {
+        this.equation.push({fraction});
     }
 }
