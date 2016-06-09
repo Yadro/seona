@@ -15,6 +15,7 @@ interface InputMatrixS {
     matrix;
     width: number;
     height: number;
+    polynomDirect;
 }
 
 /**
@@ -33,8 +34,10 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         } else {
             matr = null;
         }
+        let restorePolDir;
         if (polynom) {
             polynom = JSON.parse(polynom);
+            restorePolDir = polynom.pop();
         } else {
             polynom = null;
         }
@@ -42,10 +45,12 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         let width = matr ? matr[0].length : 3;
         this.state = {
             polynom: polynom || createArray(width),
+            polynomDirect: restorePolDir || -1,
             matrix: matr || createMatrix(3, 3),
             width: width,
             height:  matr ? matr.length : 3,
         };
+        this.selectChange = this.selectChange.bind(this);
     }
 
     onChange(el, e) {
@@ -91,7 +96,9 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
      * сохраняем матрицу и полином
      */
     verify() {
-        const {matrix, polynom} = this.state;
+        const {matrix, polynomDirect} = this.state;
+        let polynom = this.state.polynom;
+        polynom.push(polynomDirect);
         let matrixFract = [];
 
         matrix.forEach((row, i) => {
@@ -118,9 +125,25 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
                 polynom.map((el, index) => (
                     <input type="text" key={index} value={el}
                            onChange={this.onPolynomChange.bind(this, index)}/>
-                ))
-            }</div>
+                ))}
+                <span>&rarr;</span>
+                {this.selectRender()}
+            </div>
         );
+    }
+
+    selectChange(e) {
+        this.setState({polynomDirect: +e.target.value} as InputMatrixS);
+    }
+
+    selectRender() {
+        return (
+            <select defaultValue={this.state.polynomDirect}
+                    onChange={this.selectChange}>
+                <option value="-1">min</option>
+                <option value="1">max</option>
+            </select>
+        )
     }
 
     rowRender(row: Fraction[], index) {

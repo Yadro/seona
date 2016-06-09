@@ -14,6 +14,7 @@ export class Simplex {
     /** по шагам */
     bystep: boolean;
     polynom: FractionType[];
+    polynomDirect: number;
     originSize: number;
     matrix: MatrixM;
     debug: {
@@ -35,13 +36,17 @@ export class Simplex {
     constructor(polynom: number[], matrix: MatrixM, bystep: boolean) {
         console.clear();
         this.bystep = bystep;
+
+        this.polynomDirect = polynom.pop();
         this.polynom = polynom.map((e) => new Fraction(e));
         this.originSize = polynom.length - 1;
+
         this.matrix = matrix;
         this.head = getArrIndex(1, matrix.width - 1);
         this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
-        this.addLastRow();
+        this.firstStep();
 
+        this.debug.push({equation: this.printPolynom(this.polynom)});
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
 
@@ -373,7 +378,7 @@ export class Simplex {
         return i;
     }
 
-    private addLastRow() {
+    firstStep() {
         let {matrix: mtx, height, width} = this.matrix;
         let row = new Array(width);
 
@@ -385,6 +390,10 @@ export class Simplex {
         }
         row = row.map(e => new Fraction(-e));
         this.matrix.pushRow(row);
+
+        if (this.polynomDirect === 1) {
+            this.polynom = this.polynom.map(e => e.neg());
+        }
     }
 
     private removeCol(col: number) {
