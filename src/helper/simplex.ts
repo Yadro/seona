@@ -48,6 +48,7 @@ export class Simplex {
 
     }
 
+    // todo сделать проверку на знак числа в нижнем правом углу
     /**
      * пошаговое вычисление
      * @param position
@@ -70,7 +71,11 @@ export class Simplex {
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix);
         if (this.matrix.height + this.matrix.width - 2 === this.originSize) {
+            this.lastStepPrintKnownCoeff();
+
             this.lastStep();
+            this.pushLog(this.matrix.matrix);
+
         }
     }
 
@@ -145,6 +150,21 @@ export class Simplex {
         this.debug.push({text: `p = -(${log}) = ${res.neg().toFraction()}`});
 
         matrix[this.matrix.height - 1] = row;
+    }
+
+    /**
+     * Пишем, чему равны коэффициенты в стоблце (left)
+     */
+    lastStepPrintKnownCoeff() {
+        const matrix = this.matrix;
+        this.left.forEach(k => {
+            let str = '';
+            for (let i = 0; i < matrix.width; i++) {
+                let el = matrix.getElem(i, k);
+                str += ` + ${el.neg().toFraction()}x${i}`;
+            }
+            this.debug.push({text: `x${k} = ${str}`});
+        });
     }
 
     /**
