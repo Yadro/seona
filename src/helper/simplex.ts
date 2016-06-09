@@ -46,7 +46,10 @@ export class Simplex {
         this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
         this.firstStep();
 
-        this.debug.push({equation: this.createPolynomCoeffEquation(this.polynom)});
+        this.debug.push({
+            text: 'Polynom:',
+            equation: this.polynomEquationAddMin(this.createPolynomCoeffEquation(this.polynom))
+        });
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
 
@@ -220,6 +223,12 @@ export class Simplex {
         return equation;
     }
 
+    polynomEquationAddMin(equation: PrintEquation) {
+        equation.push.sign(4);
+        equation.push.word('min');
+        return equation;
+    }
+
     /**
      * Печатаем полином с подстановкой известных переменных
      * @param coeffs
@@ -238,11 +247,12 @@ export class Simplex {
                 equation.push.word('(');
                 equation.push.arr(coeffs[id].equation);
                 equation.push.word(')');
+            } else {
+                equation.push.x(id);
             }
-            equation.push.x(id);
             equation.push.plus();
         });
-        this.debug.push({equation});
+        this.debug.push({equation: this.polynomEquationAddMin(equation)});
     }
 
     /**
