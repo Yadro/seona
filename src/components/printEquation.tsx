@@ -79,7 +79,7 @@ export default class PrintEquationComp extends React.Component<PrintEquationComp
             buf += signs[el.sign];
         } else if (el.hasOwnProperty('fraction')) {
             let fraction = el.fraction;
-            if (last.hasOwnProperty('sign') && last.sign !== 0) {
+            if (last.hasOwnProperty('sign') && last.sign !== 0 && last.sign !== 2) {
                 // "- -1" or "+ -1"
                 if (fraction.s === -1) {
                     buf = buf.slice(0, buf.length - 2);
@@ -93,7 +93,7 @@ export default class PrintEquationComp extends React.Component<PrintEquationComp
                     }
                     fraction = fraction.neg();
                 }
-            } else if (last.hasOwnProperty('word') && fraction.s === -1) {
+            } else if (last.hasOwnProperty('word') && last.word === ')' && fraction.s === -1) {
                 // ") -1" => ") - 1"
                 buf += " - ";
                 fraction = fraction.neg();
@@ -151,6 +151,10 @@ export class PrintEquation {
             this.pushSign(-1);
             return this.push;
         },
+        mul: () => {
+            this.pushSign(2);
+            return this.push;
+        },
         equal: () => {
             this.pushSign(0);
             return this.push;
@@ -190,6 +194,10 @@ export class PrintEquation {
     }
 
     pushFraction(fraction) {
+        if (typeof fraction === "number") {
+            console.log('this is not fraction');
+            // fraction = new Fraction(fraction);
+        }
         this.equation.push({fraction});
     }
 }

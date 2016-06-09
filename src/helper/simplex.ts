@@ -131,33 +131,55 @@ export class Simplex {
         this.head.forEach((num, i) => {
             num -= 1;
             let res = this.polynom[num];
-            log = res.toFraction();
+            let equation = new PrintEquation();
+            equation.push.x(num+1).equal().fraction(res);
 
             for (var j = 0; j < this.matrix.height - 1; j++) {
                 let leftInd = this.left[j];
-                log += ' + ' + matrix[i][j].neg().toFraction() + ' * ' + this.polynom[leftInd].toFraction();
+                equation.push
+                    .plus()
+                    .fraction(matrix[i][j].neg())
+                    .mul()
+                    .fraction(this.polynom[leftInd]);
+
                 res = res.add(matrix[i][j].neg().mul(this.polynom[leftInd]));
             }
             row.push(res);
-
-            this.debug.push({text: `x${num+1} = ${log} = ${res.toFraction()}`});
+            equation.push.equal().fraction(res);
+            this.debug.push({equation});
         });
         matrix[this.matrix.height - 1] = row;
 
         // calc last coefficient
         // res = p_n + sum_left_j(m_0j * p_j)
         let res = getLastItem(this.polynom);
-        log = res.toFraction();
+        // log = res.toFraction();
+        let equation = new PrintEquation();
+        equation.push
+            .word('p')
+            .equal()
+            .fraction(res)
+            .minus()
+            .word('(');
 
         let i = this.matrix.width - 1;
         for (var j = 0; j < this.matrix.height - 1; j++) {
             let leftInd = this.left[j];
-            log += ' + ' + matrix[i][j].toFraction() + ' * ' + this.polynom[leftInd].toFraction();
+            equation.push
+                .plus()
+                .fraction(matrix[i][j])
+                .mul()
+                .fraction(this.polynom[leftInd]);
+            // log += ' + ' + matrix[i][j].toFraction() + ' * ' + this.polynom[leftInd].toFraction();
             res = res.add(matrix[i][j].mul(this.polynom[leftInd]));
         }
         row.push(res.neg());
-
-        this.debug.push({text: `p = -(${log}) = ${res.neg().toFraction()}`});
+        equation.push
+            .word(')')
+            .equal()
+            .fraction(res);
+        this.debug.push({equation});
+        // this.debug.push({text: `p = -(${log}) = ${res.neg().toFraction()}`});
 
         matrix[this.matrix.height - 1] = row;
     }
