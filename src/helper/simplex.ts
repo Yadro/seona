@@ -123,7 +123,6 @@ export class Simplex {
      * todo не правильно вычисляет коэфф последнего эл
      */
     lastStep() {
-        let log;
         let matrix = this.matrix.matrix;
         let row = [];
 
@@ -153,7 +152,6 @@ export class Simplex {
         // calc last coefficient
         // res = p_n + sum_left_j(m_0j * p_j)
         let res = getLastItem(this.polynom);
-        // log = res.toFraction();
         let equation = new PrintEquation();
         equation.push
             .word('p')
@@ -170,7 +168,6 @@ export class Simplex {
                 .fraction(matrix[i][j])
                 .mul()
                 .fraction(this.polynom[leftInd]);
-            // log += ' + ' + matrix[i][j].toFraction() + ' * ' + this.polynom[leftInd].toFraction();
             res = res.add(matrix[i][j].mul(this.polynom[leftInd]));
         }
         row.push(res.neg());
@@ -179,7 +176,6 @@ export class Simplex {
             .equal()
             .fraction(res);
         this.debug.push({equation});
-        // this.debug.push({text: `p = -(${log}) = ${res.neg().toFraction()}`});
 
         matrix[this.matrix.height - 1] = row;
     }
