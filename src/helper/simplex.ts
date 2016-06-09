@@ -161,15 +161,13 @@ export class Simplex {
         this.left.forEach(k => {
             let equation = new PrintEquation();
             equation.push.x(k);
-            equation.push.sign(0);
+            equation.push.equal();
             for (let i = 0; i < matrix.width; i++) {
                 let el = matrix.getElem(i, k);
-                //str += ` + ${el.neg().toFraction()}x${i}`;
-                equation.push.sign(1);
+                equation.push.plus();
                 equation.push.fraction(el);
                 equation.push.x(i);
             }
-            console.log(equation.equation);
             this.debug.push({equation});
         });
     }

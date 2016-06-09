@@ -115,6 +115,9 @@ export class PrintEquation {
     push = {
         x: this.pushX.bind(this),
         sign: this.pushSign.bind(this),
+        plus: () => this.pushSign(1),
+        minus: () => this.pushSign(-1),
+        equal: () => this.pushSign(0),
         word: this.pushWord.bind(this),
         fraction: this.pushFraction.bind(this),
     };
