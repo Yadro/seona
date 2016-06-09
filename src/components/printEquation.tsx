@@ -142,7 +142,13 @@ export class PrintEquation {
         equal: () => this.pushSign(0),
         word: this.pushWord.bind(this),
         fraction: this.pushFraction.bind(this),
-        arr: (arr) => this.equation.push(arr),
+        arr: (arr) => {
+            if (arr.hasOwnProperty('equation')) {
+                this.equation.push(arr.equation);
+            } else {
+                this.equation.push(arr);
+            }
+        }
     };
 
     pushX(num) {

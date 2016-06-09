@@ -72,8 +72,10 @@ export class Simplex {
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix);
         if (this.matrix.height + this.matrix.width - 2 === this.originSize) {
-            this.lastStepPrintKnownCoeff();
-
+            let coeff = this.lastStepFindToPrintKnownCoeff();
+            this.printKnownCoeff(coeff);
+            this.printPolynomWithSubstitution(coeff);
+            this.printPolynom();
             this.lastStep();
             this.pushLog(this.matrix.matrix);
 
@@ -154,31 +156,87 @@ export class Simplex {
     }
 
     /**
-     * Пишем, чему равны коэффициенты в стоблце (left)
+     * Находит, чему равны коэффициенты в стоблце (left)
      */
-    lastStepPrintKnownCoeff() {
+    lastStepFindToPrintKnownCoeff() {
+        let coeff = {};
         const matrix = this.matrix;
         this.left.forEach((k, kIdx) => {
             let equation = new PrintEquation();
-            equation.push.x(k);
-            equation.push.equal();
+            // equation.push.x(k);
+            // equation.push.equal();
             for (let i = 0; i < matrix.width; i++) {
                 let el = matrix.getElem(i, kIdx);
-                equation.push.plus();
+                if (i !== 0) {
+                    equation.push.plus();
+                }
                 equation.push.fraction(el);
                 if (i < matrix.width - 1) {
                     equation.push.x(this.head[i]);
                 }
             }
-            this.debug.push({equation});
+            coeff[k] = equation;
         });
+        return coeff;
+    }
+
+    /**
+     * Распечатывает найденные коэффициенты
+     */
+    printKnownCoeff(coeffs: {[id: number]: PrintEquation}) {
+        for (let k in coeffs) {
+            if (coeffs.hasOwnProperty(k)) {
+                let equation = new PrintEquation();
+                equation.push.x(k);
+                equation.push.sign(0);
+                equation.push.arr(coeffs[k].equation);
+                this.debug.push({equation});
+            }
+        }
     }
 
     /**
      * Печатаем полином с подстановкой известных переменных
      */
     lastStepPrintPolynomWithReplaceKnownCoeff() {
+        
+    }
 
+    printPolynom() {
+        let equation = new PrintEquation();
+        const len = this.polynom.length - 1;
+        this.polynom.forEach((k, idx) => {
+            const id = idx + 1;
+            equation.push.fraction(k);
+            if (idx !== len) {
+                equation.push.sign(2);
+                equation.push.x(id);
+                equation.push.plus();
+            }
+
+        });
+        this.debug.push({equation});
+    }
+    
+    printPolynomWithSubstitution(coeffs: {[id: number]: PrintEquation}) {
+        let equation = new PrintEquation();
+        const len = this.polynom.length - 1;
+        this.polynom.forEach((k, idx) => {
+            const id = idx + 1;
+            equation.push.fraction(k);
+            if (idx === len) {
+                return;
+            }
+            equation.push.sign(2);
+            if (coeffs.hasOwnProperty(id)) {
+                equation.push.word('(');
+                equation.push.arr(coeffs[id].equation);
+                equation.push.word(')');
+            }
+            equation.push.x(id);
+            equation.push.plus();
+        });
+        this.debug.push({equation});
     }
 
     /**
