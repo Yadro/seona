@@ -75,7 +75,7 @@ export class Simplex {
             let coeff = this.lastStepFindToPrintKnownCoeff();
             this.printKnownCoeff(coeff);
             this.printPolynomWithSubstitution(coeff);
-            this.printPolynom();
+            this.printPolynom(this.polynom);
             this.lastStep();
             this.pushLog(this.matrix.matrix);
 
@@ -170,9 +170,11 @@ export class Simplex {
                 if (i !== 0) {
                     equation.push.plus();
                 }
-                equation.push.fraction(el);
                 if (i < matrix.width - 1) {
+                    equation.push.fraction(el.neg());
                     equation.push.x(this.head[i]);
+                } else {
+                    equation.push.fraction(el);
                 }
             }
             coeff[k] = equation;
@@ -181,7 +183,7 @@ export class Simplex {
     }
 
     /**
-     * Распечатывает найденные коэффициенты
+     * Распечатывает найденные коэффициенты на предпоследнем шаге
      */
     printKnownCoeff(coeffs: {[id: number]: PrintEquation}) {
         for (let k in coeffs) {
@@ -194,11 +196,15 @@ export class Simplex {
             }
         }
     }
-    
-    printPolynom() {
+
+    /**
+     * Распечатать полином
+     * @param polynom
+     */
+    printPolynom(polynom) {
         let equation = new PrintEquation();
-        const len = this.polynom.length - 1;
-        this.polynom.forEach((k, idx) => {
+        const len = polynom.length - 1;
+        polynom.forEach((k, idx) => {
             const id = idx + 1;
             equation.push.fraction(k);
             if (idx !== len) {
