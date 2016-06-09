@@ -10,6 +10,7 @@ import {Graph} from './components/graph';
 import {SimplexMatrix} from './components/simplexMatrix'
 import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
+import PrintEquationComp from "./components/printEquation";
 
 interface AppS {
     matrix: MatrixM;
@@ -88,6 +89,7 @@ class App extends React.Component<any, AppS> {
         */
         return (
             <div>
+                <PrintEquationComp />
                 <InputMatrix callback={this.calc.bind(this)} showCalc={this.state.oninput}/>
                 {this.state.oninput ?
                     <span>
