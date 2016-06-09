@@ -46,7 +46,7 @@ export class Simplex {
         this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
         this.firstStep();
 
-        this.debug.push({equation: this.printPolynom(this.polynom)});
+        this.debug.push({equation: this.createPolynomCoeffEquation(this.polynom)});
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
 
@@ -80,10 +80,9 @@ export class Simplex {
             let coeff = this.lastStepFindToPrintKnownCoeff();
             this.printKnownCoeff(coeff);
             this.printPolynomWithSubstitution(coeff);
-            this.printPolynom(this.polynom);
+            this.createPolynomCoeffEquation(this.polynom);
             this.lastStep();
             this.pushLog(this.matrix.matrix);
-
         }
     }
 
@@ -206,7 +205,7 @@ export class Simplex {
      * Распечатать полином
      * @param polynom
      */
-    printPolynom(polynom) {
+    createPolynomCoeffEquation(polynom) {
         let equation = new PrintEquation();
         const len = polynom.length - 1;
         polynom.forEach((k, idx) => {
@@ -217,9 +216,8 @@ export class Simplex {
                 equation.push.x(id);
                 equation.push.plus();
             }
-
         });
-        this.debug.push({equation});
+        return equation;
     }
 
     /**
@@ -378,6 +376,10 @@ export class Simplex {
         return i;
     }
 
+    /**
+     * Вычисляем последнюю строку в матрице
+     * и домножаем коэффициенты полинома на -1, если стремится к макс
+     */
     firstStep() {
         let {matrix: mtx, height, width} = this.matrix;
         let row = new Array(width);
