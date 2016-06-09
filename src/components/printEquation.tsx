@@ -4,7 +4,7 @@ import * as React from 'react';
 import Fraction = require('fraction');
 import {FractionType} from "../helper/fraction.js";
 
-interface Equaltion {
+interface Equation {
     x?: number;
     sign?: number;
     word?: string;
@@ -17,12 +17,17 @@ const signs = {
     1: ' + ',
     2: '&middot;',
     3: ' : ',
+};
+
+interface PrintEquationCompP {
+    equation: PrintEquation;
 }
-export default class PrintEquationComp extends React.Component{
+
+export default class PrintEquationComp extends React.Component<PrintEquationCompP, any> {
     /**
      * @example x1 = + 1/2·x1 - 1/2·x2 - 1/2·x3 + 1/2·x4 + 5(-1/2·x4 + 10)
      */
-    equation: Equaltion[] = [
+    equation: Equation[] = [
         {x: 1},
         {sign: 0},
 
@@ -51,9 +56,9 @@ export default class PrintEquationComp extends React.Component{
         {word: ')'},
     ];
     
-    constructor(props) {
+    constructor(props: PrintEquationCompP) {
         super(props);
-        this.equation = props.equation || this.equation;
+        this.equation = props.equation ? props.equation.equation : this.equation;
     }
 
     sub(value) {
@@ -62,8 +67,8 @@ export default class PrintEquationComp extends React.Component{
 
     render() {
         let buf = '';
-        let last: Equaltion = {};
-        this.equation.forEach((el: Equaltion, idx) => {
+        let last: Equation = {};
+        this.equation.forEach((el: Equation, idx) => {
             if (el.hasOwnProperty('x')) {
                 if (last.hasOwnProperty('fraction')) {
                     buf += '&middot;';
@@ -98,11 +103,10 @@ export default class PrintEquationComp extends React.Component{
         });
         return <div dangerouslySetInnerHTML={{__html: buf}} ></div>
     }
-    
 }
 
 class PrintEquation extends React.Component{
-    equation: Equaltion[] = [
+    equation: Equation[] = [
         {x: 1},
         {sign: 0},
         {fraction: new Fraction(-1)},
