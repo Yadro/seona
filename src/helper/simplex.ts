@@ -167,11 +167,18 @@ export class Simplex {
                 equation.push.plus();
                 equation.push.fraction(el);
                 if (i < matrix.width - 1) {
-                    equation.push.x(i + 1);
+                    equation.push.x(this.head[i]);
                 }
             }
             this.debug.push({equation});
         });
+    }
+
+    /**
+     * Печатаем полином с подстановкой известных переменных
+     */
+    lastStepPrintPolynomWithReplaceKnownCoeff() {
+
     }
 
     /**
