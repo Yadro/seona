@@ -194,14 +194,7 @@ export class Simplex {
             }
         }
     }
-
-    /**
-     * Печатаем полином с подстановкой известных переменных
-     */
-    lastStepPrintPolynomWithReplaceKnownCoeff() {
-        
-    }
-
+    
     printPolynom() {
         let equation = new PrintEquation();
         const len = this.polynom.length - 1;
@@ -217,7 +210,11 @@ export class Simplex {
         });
         this.debug.push({equation});
     }
-    
+
+    /**
+     * Печатаем полином с подстановкой известных переменных
+     * @param coeffs
+     */
     printPolynomWithSubstitution(coeffs: {[id: number]: PrintEquation}) {
         let equation = new PrintEquation();
         const len = this.polynom.length - 1;
