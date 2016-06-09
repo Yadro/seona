@@ -135,19 +135,41 @@ export class PrintEquation {
     }
 
     push = {
-        x: this.pushX.bind(this),
-        sign: this.pushSign.bind(this),
-        plus: () => this.pushSign(1),
-        minus: () => this.pushSign(-1),
-        equal: () => this.pushSign(0),
-        word: this.pushWord.bind(this),
-        fraction: this.pushFraction.bind(this),
+        x: (num) => {
+            this.pushX(num);
+            return this.push;
+        },
+        sign: (sign) => {
+            this.pushSign(sign);
+            return this.push;
+        },
+        plus: () => {
+            this.pushSign(1);
+            return this.push;
+        },
+        minus: () => {
+            this.pushSign(-1);
+            return this.push;
+        },
+        equal: () => {
+            this.pushSign(0);
+            return this.push;
+        },
+        word: (word) => {
+            this.pushWord(word);
+            return this.push;
+        },
+        fraction: (fraction) => {
+            this.pushFraction(fraction);
+            return this.push;
+        },
         arr: (arr) => {
             if (arr.hasOwnProperty('equation')) {
                 this.equation.push(arr.equation);
             } else {
                 this.equation.push(arr);
             }
+            return this.push;
         }
     };
 

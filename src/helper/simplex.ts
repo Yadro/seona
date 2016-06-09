@@ -215,17 +215,14 @@ export class Simplex {
             const id = idx + 1;
             equation.push.fraction(k);
             if (idx !== len) {
-                equation.push.sign(2);
-                equation.push.x(id);
-                equation.push.plus();
+                equation.push.sign(2).x(id).plus();
             }
         });
         return equation;
     }
 
     polynomEquationAddMin(equation: PrintEquation) {
-        equation.push.sign(4);
-        equation.push.word('min');
+        equation.push.sign(4).word('min');
         return equation;
     }
 
@@ -244,9 +241,7 @@ export class Simplex {
             }
             equation.push.sign(2);
             if (coeffs.hasOwnProperty(id)) {
-                equation.push.word('(');
-                equation.push.arr(coeffs[id].equation);
-                equation.push.word(')');
+                equation.push.word('(').arr(coeffs[id].equation).word(')');
             } else {
                 equation.push.x(id);
             }
