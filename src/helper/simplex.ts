@@ -158,15 +158,17 @@ export class Simplex {
      */
     lastStepPrintKnownCoeff() {
         const matrix = this.matrix;
-        this.left.forEach(k => {
+        this.left.forEach((k, kIdx) => {
             let equation = new PrintEquation();
             equation.push.x(k);
             equation.push.equal();
             for (let i = 0; i < matrix.width; i++) {
-                let el = matrix.getElem(i, k);
+                let el = matrix.getElem(i, kIdx);
                 equation.push.plus();
                 equation.push.fraction(el);
-                equation.push.x(i);
+                if (i < matrix.width - 1) {
+                    equation.push.x(i + 1);
+                }
             }
             this.debug.push({equation});
         });
@@ -210,11 +212,11 @@ export class Simplex {
         let oporaRow = matrixInst.getRow(y);
         for (let i = 0; i < matrixInst.height; i++) {
             if (i == y) continue;
-            let koeff = origMatrix[i][x];
-            console.log(i, koeff);
+            let coeff = origMatrix[i][x];
+            console.log(i, coeff);
             for (var j = 0; j < matrixInst.width; j++) {
                 if (j == x) continue;
-                matrix[i][j] = origMatrix[i][j].sub(koeff.mul(oporaRow[j]));
+                matrix[i][j] = origMatrix[i][j].sub(coeff.mul(oporaRow[j]));
             }
             if (debugConf.debugRow) {
                 matrixInst.log();
