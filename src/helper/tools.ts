@@ -80,3 +80,7 @@ export function mulVec(vec: FractionType[], f: (el: FractionType, i: number) => 
         return t !== undefined ? t : e;
     })
 }
+
+export var isArray = Array.isArray || function (arr) {
+    return toString.call(arr) == '[object Array]';
+};
