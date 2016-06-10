@@ -15,7 +15,7 @@ export class Simplex {
     bystep: boolean;
     polynom: FractionType[];
     polynomDirect: number;
-    originSize: number;
+    originPolynomSize: number;
     matrix: MatrixM;
     debug: {
         m?: MatrixM;
@@ -35,6 +35,12 @@ export class Simplex {
     left: number[];
 
     /**
+     *
+     * @type {number}
+     */
+    isLastStep = false;
+
+    /**
      * @param polynom
      * @param matrix матрица
      * @param bystep
@@ -45,7 +51,7 @@ export class Simplex {
 
         this.polynomDirect = polynom.pop();
         this.polynom = polynom.map((e) => new Fraction(e));
-        this.originSize = polynom.length - 1;
+        this.originPolynomSize = polynom.length - 1;
 
         this.matrix = matrix;
         this.head = getArrIndex(1, matrix.width - 1);
@@ -85,7 +91,8 @@ export class Simplex {
         console.log(pos);
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix);
-        if (this.matrix.height + this.matrix.width - 2 === this.originSize) {
+        if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize && this.isLastStep === false) {
+            this.isLastStep = true;
             let coeff = this.lastStepFindToPrintKnownCoeff();
             this.printKnownCoeff(coeff);
             this.printPolynomWithSubstitution(coeff);
@@ -96,12 +103,14 @@ export class Simplex {
     }
 
     /**
-     * один шаг вычисления таблицы
+     * Один шаг вычисления таблицы
      * @param reference
      */
     oneStep(reference) {
         this.swap(reference.x, reference.y);
-        this.removeCol(reference.x);
+        if (this.head[reference.x] > this.originPolynomSize) {
+            this.removeCol(reference.x);
+        }
     }
     
 
@@ -126,7 +135,7 @@ export class Simplex {
 
     /**
      * Подставляем найденные элементы в полином и находим коэффициенты элементов для последней строки матрицы
-     * todo не правильно вычисляет коэфф последнего эл
+     * предпоследний шаг
      */
     lastStep() {
         let matr = this.matrix;
@@ -156,7 +165,6 @@ export class Simplex {
         //matrRaw[this.matrix.height - 1] = row;
 
         // calc last coefficient
-        // res = p_n + sum_left_j(m_0j * p_j)
         let res = getLastItem(this.polynom);
         let equation = new PrintEquation();
         equation.push
