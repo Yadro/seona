@@ -125,7 +125,7 @@ export class Simplex {
     }
 
     /**
-     * Подставляем найденные элементы в полином и находим коэффициенты элементов
+     * Подставляем найденные элементы в полином и находим коэффициенты элементов для последней строки матрицы
      * todo не правильно вычисляет коэфф последнего эл
      */
     lastStep() {
@@ -153,7 +153,7 @@ export class Simplex {
             equation.push.equal().fraction(res);
             this.debug.push({equation});
         });
-        matrRaw[this.matrix.height - 1] = row;
+        //matrRaw[this.matrix.height - 1] = row;
 
         // calc last coefficient
         // res = p_n + sum_left_j(m_0j * p_j)
@@ -161,24 +161,22 @@ export class Simplex {
         let equation = new PrintEquation();
         equation.push
             .word('p')
-            .equal()
-            .fraction(res)
-            .minus()
-            .word('(');
+            .equal();
 
-        let i = this.matrix.width - 1;
-        for (var j = 0; j < this.matrix.height - 1; j++) {
-            let leftInd = this.left[j];
+        let lastCol = this.matrix.width - 1;
+        this.left.forEach((leftValue, rowIdx) => {
             equation.push
                 .plus()
-                .fraction(matrRaw[i][j])
+                .fraction(this.polynom[leftValue - 1])
                 .mul()
-                .fraction(this.polynom[leftInd]);
-            res = res.add(matrRaw[i][j].mul(this.polynom[leftInd]));
-        }
+                .fraction(matr.getElem(rowIdx, lastCol));
+
+            res = res.add(matr.getElem(rowIdx, lastCol).mul(this.polynom[leftValue - 1]));
+        });
         row.push(res.neg());
         equation.push
-            .word(')')
+            .plus()
+            .fraction(getLastItem(this.polynom))
             .equal()
             .fraction(res);
         this.debug.push({equation});
