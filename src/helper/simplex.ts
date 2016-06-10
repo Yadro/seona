@@ -362,11 +362,13 @@ export class Simplex {
         let x = getIndMaxEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
 
         let i = 0;
-        while (i < this_matrix.height - 1 && matrix[i][x].s == -1) {
+        while (i < this_matrix.height - 2 && matrix[i][x].s == -1) {
             i++;
         }
 
         let lastCol = this_matrix.getCol(this_matrix.width - 1);
+
+        // todo деление на ноль
         let minEl = lastCol[i].div(matrix[i][x]);
         let minId = i;
         for (; i < this_matrix.height - 1; i++) {
