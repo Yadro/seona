@@ -91,7 +91,10 @@ export class Simplex {
         console.log(pos);
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix);
-        if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize && this.isLastStep === false) {
+
+        if (this.isLastStep === true) {
+            this.showResult();
+        } else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize && this.isLastStep === false) {
             this.isLastStep = true;
             let coeff = this.lastStepFindToPrintKnownCoeff();
             this.printKnownCoeff(coeff);
@@ -452,6 +455,47 @@ export class Simplex {
             select: select || null,
             text: text || null
         });
+    }
+
+    /**
+     * Окончательный шаг, вывод коэффициентов
+     */
+    showResult() {
+        let matr = this.matrix;
+        let equation = new PrintEquation();
+        equation.push
+            .word('x*')
+            .equal()
+            .word('(');
+
+        let coeff = this.getLastColCoeff();
+        for (let i = 1; i <= this.originPolynomSize; i++) {
+            let num = coeff.hasOwnProperty(i) ? coeff[i] : 0;
+            equation.push
+                .fraction(num)
+                .word(', ');
+        }
+        equation.push.word(')');
+        this.debug.push({equation});
+        let equation2 = new PrintEquation();
+        equation2.push
+            .word('f*')
+            .equal()
+            .fraction(matr.getElem(matr.height - 1, matr.width - 1));
+        this.debug.push({equation: equation2});
+    }
+
+    /**
+     * Возвращает объект с номером коэффициента и значением в последнем столбце
+     */
+    getLastColCoeff() {
+        let matr = this.matrix;
+        const len = matr.height - 1;
+        let lastCol = {};
+        for (let i = 0; i < len; i++) {
+            lastCol[this.left[i]] = matr.getElem(i, matr.width - 1);
+        }
+        return lastCol;
     }
 }
 

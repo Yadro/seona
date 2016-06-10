@@ -196,7 +196,7 @@ export class PrintEquation {
     pushFraction(fraction) {
         if (typeof fraction === "number") {
             console.log('this is not fraction');
-            // fraction = new Fraction(fraction);
+            fraction = new Fraction(fraction);
         }
         this.equation.push({fraction});
     }
