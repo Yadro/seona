@@ -82,7 +82,6 @@ class App extends React.Component<any, AppS> {
     render() {
         return (
             <div>
-                <PrintEquationComp />
                 <InputMatrix callback={this.calc.bind(this)} showCalc={this.state.oninput}/>
                 {this.state.oninput ?
                     <span>
@@ -96,7 +95,7 @@ class App extends React.Component<any, AppS> {
                 {!this.state.oninput && !this.state.end ?
                     <span>
                         <button onClick={this.onPrev.bind(this)}>prev</button>
-                        <button onClick={this.onNext.bind(this)}>next</button>
+                        <button onClick={this.onNext.bind(this, undefined)}>next</button>
                     </span> : null}
 
                 {!this.state.oninput ?
