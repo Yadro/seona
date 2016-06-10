@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Fraction = require('../../node_modules/fraction.js/fraction');
 import {MatrixM} from "../helper/matrix";
-import {createMatrix, createArray, changeSizeMatrix} from  '../helper/tools';
+import {createMatrix, createArray, changeSizeMatrix, isArray} from  '../helper/tools';
 import {downloadFile} from "../helper/fileLoad";
 
 interface InputMatrixP {
@@ -55,14 +55,18 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
     }
 
     componentWillReceiveProps(nextProps) {
-        let polynomDirect = nextProps.polynom.pop();
-        this.setState({
-            polynom: nextProps.polynom,
-            polynomDirect,
-            matrix: nextProps.matrix,
-            width: nextProps.polynom.length,
-            height:  nextProps.matrix.length,
-        } as InputMatrixS)
+        if (nextProps.hasOwnProperty('polynom') && isArray(nextProps.polynom)
+            && nextProps.hasOwnProperty('matrix')) {
+            let polynom = nextProps.polynom.slice();
+            let polynomDirect = polynom.pop();
+            this.setState({
+                polynom: polynom,
+                polynomDirect,
+                matrix: nextProps.matrix,
+                width: nextProps.polynom.length,
+                height:  nextProps.matrix.length,
+            } as InputMatrixS)
+        }
     }
 
     onChange(el, e) {
