@@ -421,15 +421,21 @@ export class Simplex {
     /**
      * Вычисляем последнюю строку в матрице
      * и домножаем коэффициенты полинома на -1, если стремится к макс
+     * тоже самое с граничными условиями
      */
     firstStep() {
-        let {matrix: mtx, height, width} = this.matrix;
+        let {matrix: matr, height, width} = this.matrix;
+        this.matrix.matrix = matr.map((row: FractionType[]) => {
+            if (row[row.length - 1].s === -1) {
+                return row.map(e => e.neg());
+            }
+            return row;
+        });
         let row = new Array(width);
-
         for (let j = 0; j < width; j++) {
             row[j] = 0;
             for (let i = 0; i < height; i++) {
-                row[j] += mtx[i][j];
+                row[j] += matr[i][j];
             }
         }
         row = row.map(e => new Fraction(-e));
