@@ -4,6 +4,7 @@ import * as React from 'react';
 import Fraction = require('../../node_modules/fraction.js/fraction');
 import {MatrixM} from "../helper/matrix";
 import {createMatrix, createArray, changeSizeMatrix} from  '../helper/tools';
+import {downloadFile} from "../helper/fileLoad";
 
 interface InputMatrixP {
     callback: (matr, polynom) => any;
@@ -154,6 +155,15 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         );
     }
 
+    saveToJson() {
+        let obj = {};
+        let poly = this.state.polynom;
+        poly.push(this.state.polynomDirect);
+        obj['matrix'] = this.state.matrix;
+        obj['polynom'] = poly;
+        downloadFile(JSON.stringify(obj));
+    }
+
     render() {
         let i = 0;
         const matrix = this.state.matrix;
@@ -165,6 +175,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
         return (
             <div>
+                <button onClick={this.saveToJson.bind(this)}>download</button>
                 Polynom
                 {this.rowPoly()}
                 Matrix size

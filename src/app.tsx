@@ -11,6 +11,7 @@ import {SimplexMatrix} from './components/simplexMatrix'
 import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
 import PrintEquationComp from "./components/printEquation";
+import {uploadFile} from './helper/fileLoad';
 
 interface AppS {
     matrix: MatrixM;
@@ -53,7 +54,7 @@ class App extends React.Component<any, AppS> {
     onPrev() {
         this.simplex.prev();
     }
-    
+
     onNext(pos?) {
         let res = this.simplex.next(pos);
         this.setState({
@@ -74,7 +75,7 @@ class App extends React.Component<any, AppS> {
             console.error(err);
         }
     }
-    
+
     onClickCheckbox(e) {
         this.setState({bystep: e.target.checked} as AppS);
     }
@@ -82,6 +83,7 @@ class App extends React.Component<any, AppS> {
     render() {
         return (
             <div>
+                <input type="file" id="files" name="files[]" onChange={uploadFile}/>
                 <InputMatrix callback={this.calc.bind(this)} showCalc={this.state.oninput}/>
                 {this.state.oninput ?
                     <span>

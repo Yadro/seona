@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "filesaver.js": "^0.2.0",
     "fraction.js": "^3.2.5",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^1.6.0",
