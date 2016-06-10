@@ -23,9 +23,15 @@ export class Simplex {
         text?;
     }[] = [];
 
-    /** номера элементов колонок */
+    /**
+     * Номера элементов колонок
+     * нумерация с 1
+     */
     head: number[];
-    /** номера элементов строк */
+    /**
+     * Номера элементов строк
+     * нумерация с 1
+     */
     left: number[];
 
     /**
@@ -72,7 +78,7 @@ export class Simplex {
                 x: position[1]
             }
         }
-        let el = this.matrix.getElem(pos.x, pos.y);
+        let el = this.matrix.getElem(pos.y, pos.x);
         if (!el || el.n == 0) {
             throw new Error('Simplex: reference element is zero');
         }
@@ -123,31 +129,31 @@ export class Simplex {
      * todo не правильно вычисляет коэфф последнего эл
      */
     lastStep() {
-        let matrix = this.matrix.matrix;
+        let matr = this.matrix;
+        let matrRaw = matr.matrix;
         let row = [];
 
         // calc coefficients
-        this.head.forEach((num, i) => {
-            num -= 1;
-            let res = this.polynom[num];
+        this.head.forEach((num, headIdx) => {
+            let res = this.polynom[num - 1];
             let equation = new PrintEquation();
-            equation.push.x(num+1).equal().fraction(res);
+            equation.push.x(num).equal().fraction(res);
 
             for (var j = 0; j < this.matrix.height - 1; j++) {
-                let leftInd = this.left[j];
+                let leftRowValue = this.left[j];
                 equation.push
                     .plus()
-                    .fraction(matrix[i][j].neg())
+                    .fraction(this.polynom[leftRowValue - 1])
                     .mul()
-                    .fraction(this.polynom[leftInd]);
+                    .fraction(matr.getElem(j, headIdx).neg());
 
-                res = res.add(matrix[i][j].neg().mul(this.polynom[leftInd]));
+                res = res.add(matr.getElem(j, headIdx).neg().mul(this.polynom[leftRowValue - 1]));
             }
             row.push(res);
             equation.push.equal().fraction(res);
             this.debug.push({equation});
         });
-        matrix[this.matrix.height - 1] = row;
+        matrRaw[this.matrix.height - 1] = row;
 
         // calc last coefficient
         // res = p_n + sum_left_j(m_0j * p_j)
@@ -165,10 +171,10 @@ export class Simplex {
             let leftInd = this.left[j];
             equation.push
                 .plus()
-                .fraction(matrix[i][j])
+                .fraction(matrRaw[i][j])
                 .mul()
                 .fraction(this.polynom[leftInd]);
-            res = res.add(matrix[i][j].mul(this.polynom[leftInd]));
+            res = res.add(matrRaw[i][j].mul(this.polynom[leftInd]));
         }
         row.push(res.neg());
         equation.push
@@ -177,7 +183,7 @@ export class Simplex {
             .fraction(res);
         this.debug.push({equation});
 
-        matrix[this.matrix.height - 1] = row;
+        matrRaw[this.matrix.height - 1] = row;
     }
 
     /**
@@ -191,7 +197,7 @@ export class Simplex {
             // equation.push.x(k);
             // equation.push.equal();
             for (let i = 0; i < matrix.width; i++) {
-                let el = matrix.getElem(i, kIdx);
+                let el = matrix.getElem(kIdx, i);
                 if (i !== 0) {
                     equation.push.plus();
                 }

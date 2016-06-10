@@ -81,7 +81,7 @@ export class MatrixM {
         this.width = matrix[0].length;
     }
     
-    getElem(x, y) {
+    getElem(y, x) {
         if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
             throw new Error('Index out of bounds');
         }
