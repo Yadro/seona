@@ -73,6 +73,7 @@ export class Simplex {
     /**
      * пошаговое вычисление
      * @param position
+     * @return {boolean} алгоритм завершен
      */
     next(position?) {
         let pos;
@@ -94,6 +95,7 @@ export class Simplex {
 
         if (this.isLastStep === true) {
             this.showResult();
+            return true;
         } else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize && this.isLastStep === false) {
             this.isLastStep = true;
             let coeff = this.lastStepFindToPrintKnownCoeff();
@@ -103,6 +105,7 @@ export class Simplex {
             this.lastStep();
             this.pushLog(this.matrix.matrix);
         }
+        return false;
     }
 
     /**

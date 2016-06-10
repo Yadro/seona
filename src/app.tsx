@@ -18,6 +18,7 @@ interface AppS {
     log;
     bystep;
     oninput;
+    end;
 }
 
 class App extends React.Component<any, AppS> {
@@ -32,6 +33,7 @@ class App extends React.Component<any, AppS> {
             log: [],
             bystep: false,
             oninput: true,
+            end: false,
         };
     }
 
@@ -46,32 +48,28 @@ class App extends React.Component<any, AppS> {
             log: this.simplex.debug,
             oninput: false
         } as AppS);
-        
-        /*
-        let m = matrix.gaussSelect(true, [0, 4, 6]);
-        m.debugMatrix.print();
-        console.log(m.toString());
-        this.setState({matrix: matrix});*/
     }
 
     onPrev() {
         this.simplex.prev();
     }
     
-    onNext() {
-        this.simplex.next();
-        this.setState({log: this.simplex.debug} as AppS);
+    onNext(pos?) {
+        let res = this.simplex.next(pos);
+        this.setState({
+            log: this.simplex.debug,
+            end: res
+        } as AppS);
     }
 
-    selectReference(e: string) {
+    onSelectReference(e: string) {
         const pos = e.split('x');
         if (pos.length != 2) {
             throw new Error('SimplexMatrix: incorrect matrix element');
         }
         const pos_ = pos.map(el => +el);
         try {
-            this.simplex.next(pos_);
-            this.setState({log: this.simplex.debug} as AppS);
+            this.onNext(pos_);
         } catch (err) {
             console.error(err);
         }
@@ -82,11 +80,6 @@ class App extends React.Component<any, AppS> {
     }
 
     render() {
-        /*
-         <h1>Just apply Gauss it</h1>
-         <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
-         <Graph matrix={test}/>
-        */
         return (
             <div>
                 <PrintEquationComp />
@@ -98,9 +91,9 @@ class App extends React.Component<any, AppS> {
                     </span> : null}
 
                 <SimplexMatrix log={this.state.log}
-                               callback={this.selectReference.bind(this)}
+                               callback={this.onSelectReference.bind(this)}
                                lastIsTouchable="false"/>
-                {!this.state.oninput ?
+                {!this.state.oninput && !this.state.end ?
                     <span>
                         <button onClick={this.onPrev.bind(this)}>prev</button>
                         <button onClick={this.onNext.bind(this)}>next</button>
