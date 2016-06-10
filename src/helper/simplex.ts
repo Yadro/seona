@@ -484,7 +484,7 @@ export class Simplex {
         equation2.push
             .word('f*')
             .equal()
-            .fraction(matr.getElem(matr.height - 1, matr.width - 1));
+            .fraction(matr.getElem(matr.height - 1, matr.width - 1).neg());
         this.debug.push({equation: equation2});
     }
 
