@@ -7,6 +7,8 @@ import {createMatrix, createArray, changeSizeMatrix, isArray} from  '../helper/t
 import {downloadFile} from "../helper/fileLoad";
 
 interface InputMatrixP {
+    matrix;
+    polynom;
     callback: (matr, polynom) => any;
     showCalc: boolean;
 }

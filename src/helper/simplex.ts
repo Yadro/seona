@@ -10,6 +10,19 @@ const debugConf = {
     debugRow: false
 };
 
+interface IDebug {
+    m?: MatrixM;
+    p?;
+    text?;
+    select?;
+    equation?;
+    system?;
+}
+
+interface IPrintEquationVal {
+    [id: number]: PrintEquation
+}
+
 export class Simplex {
     /** по шагам */
     bystep: boolean;
@@ -17,11 +30,7 @@ export class Simplex {
     polynomDirect: number;
     originPolynomSize: number;
     matrix: MatrixM;
-    debug: {
-        m?: MatrixM;
-        p?;
-        text?;
-    }[] = [];
+    debug: IDebug[] = [];
 
     /**
      * Номера элементов колонок
@@ -201,8 +210,8 @@ export class Simplex {
     /**
      * Находит, чему равны коэффициенты в стоблце (left)
      */
-    lastStepFindToPrintKnownCoeff() {
-        let coeff = {};
+    lastStepFindToPrintKnownCoeff(): IPrintEquationVal {
+        let coeff:IPrintEquationVal = {};
         const matrix = this.matrix;
         this.left.forEach((k, kIdx) => {
             let equation = new PrintEquation();
@@ -228,7 +237,7 @@ export class Simplex {
     /**
      * Распечатывает найденные коэффициенты на предпоследнем шаге
      */
-    printKnownCoeff(coeffs: {[id: number]: PrintEquation}) {
+    printKnownCoeff(coeffs: IPrintEquationVal) {
         for (let k in coeffs) {
             if (coeffs.hasOwnProperty(k)) {
                 let equation = new PrintEquation();
@@ -266,7 +275,7 @@ export class Simplex {
      * Печатаем полином с подстановкой известных переменных
      * @param coeffs
      */
-    printPolynomWithSubstitution(coeffs: {[id: number]: PrintEquation}) {
+    printPolynomWithSubstitution(coeffs: IPrintEquationVal) {
         let equation = new PrintEquation();
         const len = this.polynom.length - 1;
         this.polynom.forEach((k, idx) => {
@@ -424,21 +433,23 @@ export class Simplex {
      * тоже самое с граничными условиями
      */
     firstStep() {
-        let {matrix: matr, height, width} = this.matrix;
-        this.matrix.matrix = matr.map((row: FractionType[]) => {
+        let matr = this.matrix.matrix;
+        let {height, width} = this.matrix;
+        matr = matr.map((row: FractionType[]) => {
             if (row[row.length - 1].s === -1) {
                 return row.map(e => e.neg());
             }
             return row;
         });
-        let row = new Array(width);
+        let row = [];
         for (let j = 0; j < width; j++) {
-            row[j] = 0;
+            row.push(0);
             for (let i = 0; i < height; i++) {
                 row[j] += matr[i][j];
             }
         }
         row = row.map(e => new Fraction(-e));
+        this.matrix.matrix = matr;
         this.matrix.pushRow(row);
 
         if (this.polynomDirect === 1) {
