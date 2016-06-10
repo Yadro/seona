@@ -20,6 +20,7 @@ interface AppS {
     bystep;
     oninput;
     end;
+    polynom;
 }
 
 class App extends React.Component<any, AppS> {
@@ -30,6 +31,7 @@ class App extends React.Component<any, AppS> {
         super(props);
         this.state = {
             matrix: null,
+            polynom: null,
             simplex: null,
             log: [],
             bystep: false,
@@ -80,11 +82,24 @@ class App extends React.Component<any, AppS> {
         this.setState({bystep: e.target.checked} as AppS);
     }
 
+    onUploadFile(obj) {
+        this.setState({
+            matrix: obj.matrix,
+            polynom: obj.polynom
+        } as AppS);
+    }
+
     render() {
         return (
             <div>
-                <input type="file" id="files" name="files[]" onChange={uploadFile}/>
-                <InputMatrix callback={this.calc.bind(this)} showCalc={this.state.oninput}/>
+                <input type="file" id="files" name="files[]"
+                       onChange={uploadFile.bind(null, this.onUploadFile.bind(this))}/>
+                <InputMatrix
+                    callback={this.calc.bind(this)}
+                    showCalc={this.state.oninput}
+                    matrix={this.state.matrix}
+                    polynom={this.state.polynom}
+                />
                 {this.state.oninput ?
                     <span>
                         <input id="checkbox" type="checkbox" onChange={this.onClickCheckbox.bind(this)}/>

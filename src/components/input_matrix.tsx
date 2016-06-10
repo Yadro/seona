@@ -54,6 +54,17 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         this.selectChange = this.selectChange.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        let polynomDirect = nextProps.polynom.pop();
+        this.setState({
+            polynom: nextProps.polynom,
+            polynomDirect,
+            matrix: nextProps.matrix,
+            width: nextProps.polynom.length,
+            height:  nextProps.matrix.length,
+        } as InputMatrixS)
+    }
+
     onChange(el, e) {
         const value = e.target.value;
         let matrix = this.state.matrix;
@@ -176,6 +187,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         return (
             <div>
                 <button onClick={this.saveToJson.bind(this)}>download</button>
+                <br/>
                 Polynom
                 {this.rowPoly()}
                 Matrix size

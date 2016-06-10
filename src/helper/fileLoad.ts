@@ -5,13 +5,13 @@ export function downloadFile(json) {
     saveAs(blob, "export.json");
 }
 
-export function uploadFile(event, callback) {
+export function uploadFile(callback, event) {
     let file = event.target.files[0];
     if (!file) return;
     let reader = new FileReader();
     reader.onload = (e) => {
         const res = JSON.parse(e.target.result);
-        console.log(res);
+        callback(res);
     };
     reader.readAsText(file);
 }
