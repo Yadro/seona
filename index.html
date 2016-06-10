@@ -5,12 +5,27 @@
     <title>Seona</title>
     <script data-main="build/main.js" src="node_modules/requirejs/require.js"></script>
     <style>
+
         input[type="text"] {
             width: 50px;
             margin: 3px;
         }
-        body, input, button {
+        body, input, button, select {
             font-family: monospace;
+            color: white;
+        }
+
+        body {
+            background: #3a3a3a;
+        }
+        input, button, select {
+            border: none;
+            padding: 3px;
+            background: #4d4d4d;
+        }
+        button {
+            padding: 4px;
+            /*border: solid 1px black;*/
         }
 
 
@@ -29,18 +44,18 @@
             border: none;
         }
         table tr td.touch:hover {
-            background-color: aqua;
+            background-color: #75b4ab;
         }
         table tr td.touch {
             cursor: pointer;
         }
         table tr td.select {
             /*background: #DADADA;*/
-            background-color: #ff00ff;
+            background-color: #cf5375;
         }
         table tr.select {
             /*background: #DADADA;*/
-            background-color: #ff00ff;
+            background-color: #cf5375;
         }
         table.simplex td:last-child {
             border-left: 1px solid;
