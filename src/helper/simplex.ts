@@ -306,7 +306,7 @@ export class Simplex {
     }
 
     /**
-     * Перестановка элементов
+     * Преобразование таблицы
      * @param x столбец
      * @param y строка
      */
@@ -366,54 +366,51 @@ export class Simplex {
      */
     findReference() {
         const this_matrix = this.matrix;
-        let matrix = this_matrix.matrix;
-
-        const minEls = getMinElements(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
+        const matrix = this_matrix.matrix;
+        const minEls = getMinElements(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 1));
         const height = this_matrix.height;
-        minEls.forEach((el) => {
-            let i = 0;
+        const lastCol = this_matrix.getCol(this_matrix.width - 1);
+
+        let minId;
+        let x;
+        for (let j = 0; j < minEls.length; j++) {
+            const el = minEls[j];
+            x = el.id;
+
+            // индексы ненулевых положительных значений
             let cur;
-            while (i < height - 1) {
+            let i = 0;
+            const possibleIdx = [];
+            while (i < height) {
                 cur = this_matrix.getElem(i, el.id);
-                // поиск ненулевого положительного числа
-                if (cur.compare(new Fraction(0)) === 1) {
-                    console.log(cur);
+                if (cur.compare(new Fraction(0)) > 0) {
+                    possibleIdx.push(i);
                 }
                 i++;
             }
-        });
+            if (possibleIdx.length === 0) {
+                continue;
+            }
+            i = possibleIdx[0];
+            let minEl = lastCol[i].div(this_matrix.getElem(i, x));
+            minId = i;
 
-        // todo проверить есть ли отриц элементы
-        let x = getIndMinEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
-
-        let i = 0;
-        // пропускаем отрицательные числа и 0
-        while (i < this_matrix.height - 1 && (matrix[i][x].s == -1 || matrix[i][x].n == 0)) {
-            i++;
-        }
-
-        if (i >= this_matrix.height) {
-            // todo этот столбец не подходит
-            console.log('fail');
-        }
-
-        let lastCol = this_matrix.getCol(this_matrix.width - 1);
-
-        // todo деление на ноль
-        let minEl = lastCol[i].div(this_matrix.getElem(i, x));
-        let minId = i;
-        for (; i < this_matrix.height - 1; i++) {
-            if (matrix[i][x].s === -1) continue;
-            let el = lastCol[i].div(matrix[i][x]);
-            if (el.compare(minEl) < 0) {
-                minEl = el;
-                minId = i;
+            for (let k = 1; k < possibleIdx.length; k++) {
+                let num = lastCol[possibleIdx[k]].div(this_matrix.getElem(possibleIdx[k], x));
+                if (num.compare(minEl) < 0) {
+                    minEl = num;
+                    minId = possibleIdx[k];
+                }
             }
         }
+        if (minId == null) {
+            return null;
+        }
+
         return {
             x: x,
             y: minId
-        }
+        };
     }
 
     print() {
@@ -528,6 +525,11 @@ export class Simplex {
         });
         return check.neg().compare(row[lastIdx]);
     }
+
+    /**
+     * Проверка на допустимость
+     */
+
 
     /**
      * Окончательный шаг, вывод коэффициентов
