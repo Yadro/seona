@@ -20,7 +20,10 @@ interface IDebug {
 }
 
 interface IPrintEquationVal {
-    [id: number]: PrintEquation
+    [id: number]: PrintEquation;
+}
+interface IdAndFractionType {
+    [id: number]: FractionType;
 }
 
 export class Simplex {
@@ -98,10 +101,10 @@ export class Simplex {
             pos = {
                 y: position[0],
                 x: position[1]
-            }
+            };
         }
         let el = this.matrix.getElem(pos.y, pos.x);
-        if (!el || el.n == 0) {
+        if (!el || el.n === 0) {
             throw new Error('Simplex: reference element is zero');
         }
         console.log(pos);
@@ -183,7 +186,7 @@ export class Simplex {
             equation.push.equal().fraction(res);
             this.debug.push({equation});
         });
-        //matrRaw[this.matrix.height - 1] = row;
+        // matrRaw[this.matrix.height - 1] = row;
 
         // calc last coefficient
         let res = getLastItem(this.polynom);
@@ -217,7 +220,7 @@ export class Simplex {
      * Находит, чему равны коэффициенты в стоблце (left)
      */
     lastStepFindToPrintKnownCoeff(): IPrintEquationVal {
-        let coeff:IPrintEquationVal = {};
+        let coeff: IPrintEquationVal = {};
         const matrix = this.matrix;
         this.left.forEach((k, kIdx) => {
             let equation = new PrintEquation();
@@ -313,7 +316,7 @@ export class Simplex {
         let matrix = matrixInst.matrix;
         let ks: FractionType = origMatrix[y][x];
 
-        console.log("element: "  +ks.toFraction());
+        console.log("element: " + ks.toFraction());
         matrixInst.log();
         this.pushLog(matrix, [y, x], 'Находим опорный элемент:');
 
@@ -339,11 +342,11 @@ export class Simplex {
         // вычисляем остальные строки
         let oporaRow = matrixInst.getRow(y);
         for (let i = 0; i < matrixInst.height; i++) {
-            if (i == y) continue;
+            if (i === y) continue;
             let coeff = origMatrix[i][x];
             console.log(i, coeff);
-            for (var j = 0; j < matrixInst.width; j++) {
-                if (j == x) continue;
+            for (let j = 0; j < matrixInst.width; j++) {
+                if (j === x) continue;
                 matrix[i][j] = origMatrix[i][j].sub(coeff.mul(oporaRow[j]));
             }
             if (debugConf.debugRow) {
@@ -358,14 +361,30 @@ export class Simplex {
 
     /**
      * Поиск опорного элемента
+     * выбор столбца по минимальному отрицательному элементу
      * @returns {{x: number, y: number}}
      */
     findReference() {
         const this_matrix = this.matrix;
         let matrix = this_matrix.matrix;
 
+        const minEls = getMinElements(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
+        const height = this_matrix.height;
+        minEls.forEach((el) => {
+            let i = 0;
+            let cur;
+            while (i < height - 1) {
+                cur = this_matrix.getElem(i, el.id);
+                // поиск ненулевого положительного числа
+                if (cur.compare(new Fraction(0)) === 1) {
+                    console.log(cur);
+                }
+                i++;
+            }
+        });
+
         // todo проверить есть ли отриц элементы
-        let x = getIndMaxEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
+        let x = getIndMinEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
 
         let i = 0;
         // пропускаем отрицательные числа и 0
@@ -384,7 +403,7 @@ export class Simplex {
         let minEl = lastCol[i].div(this_matrix.getElem(i, x));
         let minId = i;
         for (; i < this_matrix.height - 1; i++) {
-            if (matrix[i][x].s == -1) continue;
+            if (matrix[i][x].s === -1) continue;
             let el = lastCol[i].div(matrix[i][x]);
             if (el.compare(minEl) < 0) {
                 minEl = el;
@@ -405,7 +424,7 @@ export class Simplex {
             txt += `\nx${e} = `;
             let xe = `x${e}`;
             obj[xe] = '';
-            for (var j = 0; j < this.matrix.width - 1; j++) {
+            for (let j = 0; j < this.matrix.width - 1; j++) {
                 let multipler = `${mtx[i][j].neg().toFraction()}*x${this.head[j]} + `;
                 obj[xe] += multipler;
                 txt += multipler;
@@ -437,7 +456,7 @@ export class Simplex {
      */
     getLeftIndex(ind) {
         let i = this.left.indexOf(ind);
-        if (i == -1) throw new Error('index not found');
+        if (i === -1) throw new Error('index not found');
         return i;
     }
 
@@ -503,7 +522,7 @@ export class Simplex {
         let check: FractionType = new Fraction(0);
         const lastIdx = matr.height - 1;
         row.forEach((el, idx) => {
-            if (idx != lastIdx) {
+            if (idx !== lastIdx) {
                 check = check.add(el);
             }
         });
@@ -553,25 +572,41 @@ export class Simplex {
 }
 
 /**
- * Наибольший отрицательный элемент
+ * Минимальный отрицательный элемент
  * @param arr
  * @returns {number|any}
  */
-function getIndMaxEl(arr: FractionType[]): number {
+function getIndMinEl(arr: FractionType[]): number {
     let max, maxId;
     let i = 0;
 
-    while (i < arr.length && arr[i].s == 1) {
+    while (i < arr.length && arr[i].s === 1) {
         i++;
     }
     max = arr[i];
     maxId = i;
 
     for (; i < arr.length; i++) {
-        if (arr[i].s == -1 && arr[i].compare(max) > 0) {
+        if (arr[i].s === -1 && arr[i].compare(max) > 0) {
             max = arr[i];
             maxId = i;
         }
     }
     return maxId;
+}
+
+/**
+ * Минимальный отрицательный элемент
+ * @param arr
+ * @returns {number|any}
+ */
+function getMinElements(arr: FractionType[]) {
+    const els = [];
+    arr.forEach((el, id) => {
+        if (el.s === 1 || el.n === 0) return;
+        els.push({id, value: el});
+    });
+    return els.sort((a, b) => {
+        return a.value.compare(b.value);
+    });
 }
