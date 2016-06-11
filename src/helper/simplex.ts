@@ -78,13 +78,19 @@ export class Simplex {
 
     }
 
-    // todo сделать проверку на знак числа в нижнем правом углу
     /**
      * пошаговое вычисление
      * @param position
      * @return {boolean} алгоритм завершен
      */
     next(position?) {
+        const status = this.checkSimplexTable();
+        if (status < 0) {
+            console.error('Кривые руки');
+        } else if (status > 0) {
+            console.error('Система не совместна');
+        }
+
         let pos;
         if (typeof position === 'undefined') {
             pos = this.findReference();
@@ -362,14 +368,20 @@ export class Simplex {
         let x = getIndMaxEl(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 2));
 
         let i = 0;
-        while (i < this_matrix.height - 2 && matrix[i][x].s == -1) {
+        // пропускаем отрицательные числа и 0
+        while (i < this_matrix.height - 1 && (matrix[i][x].s == -1 || matrix[i][x].n == 0)) {
             i++;
+        }
+
+        if (i >= this_matrix.height) {
+            // todo этот столбец не подходит
+            console.log('fail');
         }
 
         let lastCol = this_matrix.getCol(this_matrix.width - 1);
 
         // todo деление на ноль
-        let minEl = lastCol[i].div(matrix[i][x]);
+        let minEl = lastCol[i].div(this_matrix.getElem(i, x));
         let minId = i;
         for (; i < this_matrix.height - 1; i++) {
             if (matrix[i][x].s == -1) continue;
@@ -477,6 +489,25 @@ export class Simplex {
             select: select || null,
             text: text || null
         });
+    }
+
+    /**
+     * Проверка симплекс таблицы на совместность
+     * если f* > 0 - несовместна
+     * f* < 0 - кривые руки
+     * f* = 0 - совместна
+     */
+    checkSimplexTable() {
+        const matr = this.matrix;
+        const row = matr.getCol(matr.width - 1);
+        let check: FractionType = new Fraction(0);
+        const lastIdx = matr.height - 1;
+        row.forEach((el, idx) => {
+            if (idx != lastIdx) {
+                check = check.add(el);
+            }
+        });
+        return check.neg().compare(row[lastIdx]);
     }
 
     /**
