@@ -1,4 +1,4 @@
-///<reference path="../../typings/main.d.ts"/>
+///<reference path="../../typings/index.d.ts"/>
 import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
 
 export class GraphC {
