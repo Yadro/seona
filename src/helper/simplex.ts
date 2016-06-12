@@ -121,7 +121,7 @@ export class Simplex {
         }
         console.log(pos);
         this.oneStep(pos);
-        this.pushLog(this.matrix.matrix, [], 'Итарация:');
+        this.pushLog(this.matrix.matrix, [], 'Пересчитываем таблицу:');
 
         if (this.isLastStep === true) {
             this.showResult();
@@ -590,9 +590,10 @@ export class Simplex {
         let coeff = this.getLastColCoeff();
         for (let i = 1; i <= this.originPolynomSize; i++) {
             let num = coeff.hasOwnProperty(i) ? coeff[i] : 0;
-            equation.push
-                .fraction(num)
-                .word(', ');
+            equation.push.fraction(num);
+            if (i !== this.originPolynomSize) {
+                equation.push.word(', ');
+            }
         }
         equation.push.word(')');
         this.debug.push({equation});
