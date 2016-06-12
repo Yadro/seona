@@ -1,4 +1,4 @@
-import * as saveAs from '../../node_modules/filesaver.js/filesaver';
+import * as saveAs from 'filesaver';
 
 export function downloadFile(json) {
     let blob = new Blob([json], {type: "application/json;charset=utf-8"});
