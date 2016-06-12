@@ -54,7 +54,11 @@ class App extends React.Component<any, AppS> {
     }
 
     onPrev() {
-        this.simplex.prev();
+        let res = this.simplex.prev();
+        this.setState({
+            log: this.simplex.debug,
+            end: false
+        } as AppS);
     }
 
     onNext(pos?) {

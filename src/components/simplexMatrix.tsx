@@ -21,11 +21,16 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
         const callback = this.props.callback;
         const _log = this.props.log;
         const len = _log.length - 1;
-        const log = _log.map((e, i) => (
-            <div key={i}>
-                {matrixToHtml(e, (callback && i === len) ? callback : null, 'simplex')}
-            </div>
-        ));
+        const log = _log.map((e, i) => {
+            if (e.hasOwnProperty('backup')) {
+                return <div key={i}>save <span dangerouslySetInnerHTML={{__html: '&uarr;'}}/></div>
+            }
+            return (
+                <div key={i}>
+                    {matrixToHtml(e, (callback && i === len) ? callback : null, 'simplex')}
+                </div>
+            );
+        });
         return (
             <div>{log}</div>
         )

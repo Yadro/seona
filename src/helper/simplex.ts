@@ -12,11 +12,11 @@ const debugConf = {
 
 interface IDebug {
     m?: MatrixM;
-    p?;
+    p?: number[][];
     text?;
     select?;
     equation?;
-    system?;
+    backup?: boolean;
 }
 
 interface IPrintEquationVal {
@@ -68,6 +68,8 @@ export class Simplex {
         this.matrix = matrix;
         this.head = getArrIndex(1, matrix.width - 1);
         this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
+        this.pushDebug();
+
         this.firstStep();
 
         this.debug.push({
@@ -78,7 +80,14 @@ export class Simplex {
     }
 
     prev() {
-
+        for (let j = this.debug.length - 1; j > 0; j--) {
+            let debug = this.debug.pop();
+            if (debug.backup && debug.backup === true && debug.m) {
+                this.restoreMatrixFromDebug(debug);
+                this.pushLog(this.matrix.matrix);
+                return;
+            }
+        }
     }
 
     /**
@@ -91,7 +100,7 @@ export class Simplex {
         if (status === false) {
             console.error('решение не допустимо');
         }
-        let status = this.checkOptimalSolution();
+        status = this.checkOptimalSolution();
         if (status === false) {
             console.error('решение не оптимально');
         }
@@ -132,6 +141,7 @@ export class Simplex {
      * @param reference
      */
     oneStep(reference) {
+        this.pushDebug();
         this.swap(reference.x, reference.y);
         if (this.head[reference.x] > this.originPolynomSize) {
             this.removeCol(reference.x);
@@ -509,6 +519,14 @@ export class Simplex {
         });
     }
 
+    pushDebug() {
+        this.debug.push({
+            m: new MatrixM(this.matrix.matrix),
+            p: [copyArr(this.head), copyArr(this.left)],
+            backup: true
+        });
+    }
+
     /**
      * Проверка симплекс таблицы на допустимость
      */
@@ -535,6 +553,16 @@ export class Simplex {
             }
             return (el.compare(new Fraction(0)) > 0);
         })
+    }
+
+    restoreMatrixFromDebug(debugInfo: IDebug) {
+        if (debugInfo.m && debugInfo.p && debugInfo.p.length === 2) {
+            this.matrix = debugInfo.m;
+            this.head = debugInfo.p[0];
+            this.left = debugInfo.p[1];
+        } else {
+            return false;
+        }
     }
 
 
