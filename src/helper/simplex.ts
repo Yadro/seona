@@ -87,7 +87,10 @@ export class Simplex {
      * @return {boolean} алгоритм завершен
      */
     next(position?) {
-        // let status = this.checkSimplexTable();
+        let status = this.checkValidSolution();
+        if (status === false) {
+            console.error('решение не допустимо');
+        }
         let status = this.checkOptimalSolution();
         if (status === false) {
             console.error('решение не оптимально');
@@ -507,22 +510,17 @@ export class Simplex {
     }
 
     /**
-     * Проверка симплекс таблицы на совместность
-     * если f* > 0 - несовместна
-     * f* < 0 - кривые руки
-     * f* = 0 - совместна
+     * Проверка симплекс таблицы на допустимость
      */
-    checkSimplexTable() {
+    checkValidSolution() {
         const matr = this.matrix;
         const col = matr.getCol(matr.width - 1);
-        let check: FractionType = new Fraction(0);
-        const lastIdx = matr.height - 1;
-        col.forEach((el, idx) => {
-            if (idx !== lastIdx) {
-                check = check.add(el);
+        return col.every((el, idx) => {
+            if (idx === matr.height - 1) {
+                return true;
             }
+            return (el.compare(new Fraction(0)) > 0);
         });
-        return check.neg().compare(col[lastIdx]);
     }
 
     /**
