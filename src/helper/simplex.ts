@@ -87,11 +87,10 @@ export class Simplex {
      * @return {boolean} алгоритм завершен
      */
     next(position?) {
-        const status = this.checkSimplexTable();
-        if (status < 0) {
-            console.error('Кривые руки');
-        } else if (status > 0) {
-            console.error('Система не совместна');
+        // let status = this.checkSimplexTable();
+        let status = this.checkOptimalSolution();
+        if (status === false) {
+            console.error('решение не оптимально');
         }
 
         let pos;
@@ -515,20 +514,30 @@ export class Simplex {
      */
     checkSimplexTable() {
         const matr = this.matrix;
-        const row = matr.getCol(matr.width - 1);
+        const col = matr.getCol(matr.width - 1);
         let check: FractionType = new Fraction(0);
         const lastIdx = matr.height - 1;
-        row.forEach((el, idx) => {
+        col.forEach((el, idx) => {
             if (idx !== lastIdx) {
                 check = check.add(el);
             }
         });
-        return check.neg().compare(row[lastIdx]);
+        return check.neg().compare(col[lastIdx]);
     }
 
     /**
-     * Проверка на допустимость
+     * Проверка на оптимальность
      */
+    checkOptimalSolution() {
+        const matr = this.matrix;
+        const row = matr.getRow(matr.height - 1);
+        return row.every((el, idx) => {
+            if (idx === matr.height - 1) {
+                return true;
+            }
+            return (el.compare(new Fraction(0)) > 0);
+        })
+    }
 
 
     /**
