@@ -35,7 +35,7 @@ class App extends React.Component<any, AppS> {
             polynom: null,
             simplex: null,
             log: [],
-            bystep: false,
+            bystep: true,
             oninput: true,
             end: false,
         };
@@ -107,7 +107,7 @@ class App extends React.Component<any, AppS> {
                     matrix={this.state.matrix}
                     polynom={this.state.polynom}
                 />
-                {this.state.oninput ?
+                {this.state.oninput && false ?
                     <span>
                         <input id="checkbox" type="checkbox" onChange={this.onClickCheckbox.bind(this)}/>
                         <label htmlFor="checkbox">по шагам</label>
