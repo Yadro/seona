@@ -99,11 +99,11 @@ export class Simplex {
     next(position?) {
         let status = this.checkValidSolution();
         if (status === false) {
-            console.error('решение не допустимо');
+            console.log('решение не допустимо');
         }
         status = this.checkOptimalSolution();
         if (status === false) {
-            console.error('решение не оптимально');
+            console.log('решение не оптимально');
         }
 
         let pos;
