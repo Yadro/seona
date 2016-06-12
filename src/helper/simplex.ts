@@ -17,6 +17,7 @@ interface IDebug {
     select?;
     equation?;
     backup?: boolean;
+    isLastStep?: boolean;
 }
 
 interface IPrintEquationVal {
@@ -533,7 +534,8 @@ export class Simplex {
         this.debug.push({
             m: new MatrixM(this.matrix.matrix),
             p: [copyArr(this.head), copyArr(this.left)],
-            backup: true
+            backup: true,
+            isLastStep: this.isLastStep
         });
     }
 
@@ -565,11 +567,17 @@ export class Simplex {
         })
     }
 
+    /**
+     * восстановление данных из лога
+     * @param debugInfo
+     * @returns {boolean}
+     */
     restoreMatrixFromDebug(debugInfo: IDebug) {
         if (debugInfo.m && debugInfo.p && debugInfo.p.length === 2) {
             this.matrix = debugInfo.m;
             this.head = debugInfo.p[0];
             this.left = debugInfo.p[1];
+            this.isLastStep = debugInfo.isLastStep;
         } else {
             return false;
         }
