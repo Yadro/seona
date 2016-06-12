@@ -214,13 +214,13 @@ export default class InputMatrix extends React.Component<InputMatrixP, InputMatr
                 <button onClick={this.saveToJson.bind(this)}>download</button>
                 <div>
                     <label>Число коэффициентов полинома:</label>
-                    <input type="text"
+                    <input type="number"
                            value={this.state.width}
                            onChange={this.setSize.bind(this, 'width')}/>
                 </div>
                 <div>
                     <label>Число граничных условий:</label>
-                    <input type="text"
+                    <input type="number"
                            value={this.state.height}
                            onChange={this.setSize.bind(this, 'height')}/>
                 </div>
