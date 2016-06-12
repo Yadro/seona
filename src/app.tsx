@@ -3,7 +3,7 @@
 import * as React from 'react';
 //noinspection TypeScriptCheckImport
 import * as ReactDOM from 'react-dom';
-import {InputMatrix} from 'components/input_matrix'
+import InputMatrix from 'components/inputMatrix'
 import {MatrixM} from 'helper/matrix';
 import Fraction = require('fraction');
 import {Graph} from './components/graph';

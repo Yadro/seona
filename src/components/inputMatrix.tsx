@@ -19,13 +19,14 @@ interface InputMatrixS {
     width: number;
     height: number;
     polynomDirect;
+    errorMsg: string;
 }
 
 /**
  * Класс рисующий поля для ввода коэффициентов матрицы
  * Также сохраняет и восстанавливает её из localStorage
  */
-export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
+export default class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
 
     constructor(props) {
         super(props);
@@ -52,6 +53,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             matrix: matr || createMatrix(3, 3),
             width: width,
             height:  matr ? matr.length : 3,
+            errorMsg: ''
         };
         this.selectChange = this.selectChange.bind(this);
     }
@@ -115,9 +117,10 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
      */
     verify() {
         const {matrix, polynomDirect} = this.state;
-        let polynom = this.state.polynom;
+        let polynom = this.state.polynom.slice();
         polynom.push(polynomDirect);
         let matrixFract = [];
+        let error = false;
 
         matrix.forEach((row, i) => {
             matrixFract.push([]);
@@ -125,15 +128,31 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
                 try {
                     matrixFract[i].push(new Fraction(el));
                 } catch (e) {
-                    console.error(i + " " + j, e);
+                    error = true;
+                    console.log(i + " " + j, e);
                 }
             })
         });
 
-        localStorage.setItem('matrix', JSON.stringify(matrix));
-        localStorage.setItem('polynom', JSON.stringify(polynom));
+        if (error) {
+            this.setState({
+                errorMsg: 'Введенные коэффициенты содержат недопустимые символы'
+            } as InputMatrixS);
+            return;
+        }
 
-        this.props.callback(new MatrixM(matrixFract), polynom);
+        try {
+            let parseMatrix = new MatrixM(matrixFract);
+
+            localStorage.setItem('matrix', JSON.stringify(matrix));
+            localStorage.setItem('polynom', JSON.stringify(polynom));
+
+            this.props.callback(parseMatrix, polynom);
+        } catch (e) {
+            this.setState({
+                errorMsg: 'Введенные коэффициенты содержат недопустимые символы'
+            } as InputMatrixS)
+        }
     }
 
     rowPoly() {
@@ -194,7 +213,7 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
             <div>
                 <button onClick={this.saveToJson.bind(this)}>download</button>
                 <div>
-                    <label>Размер полинома:</label>
+                    <label>Число коэффициентов полинома:</label>
                     <input type="text"
                            value={this.state.width}
                            onChange={this.setSize.bind(this, 'width')}/>
@@ -214,6 +233,10 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
                     <span>Граничные условия:</span>
                     {matrixComp}
                 </div>
+
+                {this.state.errorMsg.length !== 0 ?
+                    <div>{this.state.errorMsg}</div> : null
+                }
 
                 {this.props.showCalc ?
                     <button onClick={this.verify.bind(this)}>calc</button>
