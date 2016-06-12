@@ -73,8 +73,10 @@ export class Simplex {
         this.pushDebug();
 
         this.debug.push({
-            text: 'Polynom:',
-            equation: this.polynomEquationAddMin(this.createPolynomCoeffEquation(this.polynom))
+            text: 'Приводим задачу к каноническому виду:',
+            equation: this.polynomEquationAddMin(
+                this.polynomEquationAddFreeMember(
+                    this.createPolynomCoeffEquation(this.polynom)))
         });
         this.pushLog(this.matrix.matrix, [], 'Добавляем строку');
     }
@@ -281,6 +283,14 @@ export class Simplex {
             if (idx !== len) {
                 equation.push.sign(2).x(id).plus();
             }
+        });
+        return equation;
+    }
+
+    polynomEquationAddFreeMember(equation: PrintEquation) {
+        let i = this.originPolynomSize + 1;
+        this.left.forEach(e => {
+            equation.push.plus().x(i++);
         });
         return equation;
     }
