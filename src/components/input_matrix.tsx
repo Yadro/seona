@@ -193,17 +193,28 @@ export class InputMatrix extends React.Component<InputMatrixP, InputMatrixS> {
         return (
             <div>
                 <button onClick={this.saveToJson.bind(this)}>download</button>
-                <br/>
-                Polynom
-                {this.rowPoly()}
-                Matrix size
-                <input type="text"
-                       value={this.state.height}
-                       onChange={this.setSize.bind(this, 'height')}/>x
-                <input type="text"
-                       value={this.state.width}
-                       onChange={this.setSize.bind(this, 'width')}/>
-                {matrixComp}
+                <div>
+                    <label>Размер полинома:</label>
+                    <input type="text"
+                           value={this.state.width}
+                           onChange={this.setSize.bind(this, 'width')}/>
+                </div>
+                <div>
+                    <label>Число граничных условий:</label>
+                    <input type="text"
+                           value={this.state.height}
+                           onChange={this.setSize.bind(this, 'height')}/>
+                </div>
+                <div>
+                    <span>Полином:</span>
+                    {this.rowPoly()}
+                </div>
+
+                <div>
+                    <span>Граничные условия:</span>
+                    {matrixComp}
+                </div>
+
                 {this.props.showCalc ?
                     <button onClick={this.verify.bind(this)}>calc</button>
                     : null}
