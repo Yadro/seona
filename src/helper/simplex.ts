@@ -116,7 +116,8 @@ export class Simplex {
             };
         }
         if (!pos) {
-            throw new Error('Simplex: reference element not found');
+            this.debug.push({text: 'Невозможно найти опорный элемент'});
+            return true;
         }
         console.log(pos);
         this.oneStep(pos);

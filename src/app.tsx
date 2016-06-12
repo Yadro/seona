@@ -121,10 +121,6 @@ class App extends React.Component<any, AppS> {
                         <button onClick={this.onPrev.bind(this)}>prev</button>
                         <button onClick={this.onNext.bind(this, undefined)}>next</button>
                     </span> : null}
-
-                {!this.state.oninput ?
-                    <button onClick={this.onPrev.bind(this)}>clear</button>
-                    : null}
             </div>
         )
     }
