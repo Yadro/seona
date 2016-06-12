@@ -103,9 +103,8 @@ export class Simplex {
                 x: position[1]
             };
         }
-        let el = this.matrix.getElem(pos.y, pos.x);
-        if (!el || el.n === 0) {
-            throw new Error('Simplex: reference element is zero');
+        if (!pos) {
+            throw new Error('Simplex: reference element not found');
         }
         console.log(pos);
         this.oneStep(pos);
@@ -367,9 +366,9 @@ export class Simplex {
     findReference() {
         const this_matrix = this.matrix;
         const matrix = this_matrix.matrix;
-        const minEls = getMinElements(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 1));
         const height = this_matrix.height;
         const lastCol = this_matrix.getCol(this_matrix.width - 1);
+        const minEls = getMinElements(this_matrix.getRow(this_matrix.height - 1).slice(0, this_matrix.width - 1));
 
         let minId;
         let x;
@@ -402,6 +401,7 @@ export class Simplex {
                     minId = possibleIdx[k];
                 }
             }
+            break;
         }
         if (minId == null) {
             return null;
