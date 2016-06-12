@@ -12,6 +12,7 @@ import {Simplex} from './helper/simplex'
 import {getArrIndex} from "./helper/tools";
 import PrintEquationComp from "./components/printEquation";
 import {uploadFile} from './helper/fileLoad';
+import Help from "./components/help";
 
 interface AppS {
     matrix: MatrixM;
@@ -94,8 +95,10 @@ class App extends React.Component<any, AppS> {
     }
 
     render() {
+
         return (
             <div>
+                <Help />
                 <input type="file" id="files" name="files[]"
                        onChange={uploadFile.bind(null, this.onUploadFile.bind(this))}/>
                 <InputMatrix

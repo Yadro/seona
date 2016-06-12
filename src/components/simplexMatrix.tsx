@@ -3,6 +3,8 @@
 import * as React from 'react';
 import PrintEquationComp from "./printEquation";
 
+const debugSaveMatrx = false;
+
 interface SimplexP {
     log: any[];
     callback: (pos) => any;
@@ -22,8 +24,11 @@ export class SimplexMatrix extends React.Component<SimplexP, any> {
         const _log = this.props.log;
         const len = _log.length - 1;
         const log = _log.map((e, i) => {
-            if (e.hasOwnProperty('backup')) {
-                return <div key={i}>save <span dangerouslySetInnerHTML={{__html: '&uarr;'}}/></div>
+            if (e.backup) {
+                if (debugSaveMatrx) {
+                    return <div key={i}>save <span dangerouslySetInnerHTML={{__html: '&uarr;'}}/></div>
+                }
+                return;
             }
             return (
                 <div key={i}>
