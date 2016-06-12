@@ -68,9 +68,9 @@ export class Simplex {
         this.matrix = matrix;
         this.head = getArrIndex(1, matrix.width - 1);
         this.left = getArrIndex(matrix.width, matrix.width + matrix.height - 1);
-        this.pushDebug();
 
         this.firstStep();
+        this.pushDebug();
 
         this.debug.push({
             text: 'Polynom:',
@@ -80,11 +80,10 @@ export class Simplex {
     }
 
     prev() {
-        for (let j = this.debug.length - 1; j > 0; j--) {
+        for (let j = this.debug.length - 1; j >= 0; j--) {
             let debug = this.debug.pop();
             if (debug.backup && debug.backup === true && debug.m) {
                 this.restoreMatrixFromDebug(debug);
-                this.pushLog(this.matrix.matrix);
                 return;
             }
         }
@@ -119,7 +118,7 @@ export class Simplex {
         }
         console.log(pos);
         this.oneStep(pos);
-        this.pushLog(this.matrix.matrix);
+        this.pushLog(this.matrix.matrix, [], 'Итарация:');
 
         if (this.isLastStep === true) {
             this.showResult();
