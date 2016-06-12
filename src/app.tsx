@@ -118,7 +118,7 @@ class App extends React.Component<any, AppS> {
                                lastIsTouchable="false"/>
                 {!this.state.oninput && !this.state.end ?
                     <span>
-                        <button onClick={this.onPrev.bind(this)}>prev</button>
+                        <button onClick={this.onPrev.bind(this)}>back</button>
                         <button onClick={this.onNext.bind(this, undefined)}>next</button>
                     </span> : null}
             </div>
