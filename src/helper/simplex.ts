@@ -205,12 +205,10 @@ export class Simplex {
         // calc last coefficient
         let res = getLastItem(this.polynom);
 
-        //****
         let equationEx = new PrintEquation();
         equationEx.push
             .word('p')
             .equal();
-        let lastCol = this.matrix.width - 1;
         this.left.forEach((leftValue, rowIdx) => {
             equationEx.push
                 .plus()
@@ -224,7 +222,6 @@ export class Simplex {
             .plus()
             .fraction(getLastItem(this.polynom));
         this.debug.push({equation: equationEx});
-        //****
 
         let equation = new PrintEquation();
         equation.push
