@@ -204,6 +204,28 @@ export class Simplex {
 
         // calc last coefficient
         let res = getLastItem(this.polynom);
+
+        //****
+        let equationEx = new PrintEquation();
+        equationEx.push
+            .word('p')
+            .equal();
+        let lastCol = this.matrix.width - 1;
+        this.left.forEach((leftValue, rowIdx) => {
+            equationEx.push
+                .plus()
+                .x(leftValue)
+                .mul()
+                .word('_[')
+                .x(leftValue)
+                .word(']');
+        });
+        equationEx.push
+            .plus()
+            .fraction(getLastItem(this.polynom));
+        this.debug.push({equation: equationEx});
+        //****
+
         let equation = new PrintEquation();
         equation.push
             .word('p')
@@ -336,9 +358,9 @@ export class Simplex {
         let origMatrix = this.matrix.matrix;
         let matrixInst = this.matrix.clone();
         let matrix = matrixInst.matrix;
-        let ks: FractionType = origMatrix[y][x];
+        let opor: FractionType = origMatrix[y][x];
 
-        console.log("element: " + ks.toFraction());
+        console.log("element: " + opor.toFraction());
         matrixInst.log();
         this.pushLog(matrix, [y, x], 'Находим опорный элемент:');
 
@@ -348,13 +370,13 @@ export class Simplex {
 
         // расчет строки y (row)
         for (let i = 0; i < matrixInst.width; i++) {
-            matrix[y][i] = origMatrix[y][i].div(ks);
+            matrix[y][i] = origMatrix[y][i].div(opor);
         }
         // расчет столбца x (col)
         for (let i = 0; i < matrixInst.height; i++) {
-            matrix[i][x] = origMatrix[i][x].div(ks.neg());
+            matrix[i][x] = origMatrix[i][x].div(opor.neg());
         }
-        matrix[y][x] = new Fraction(1).div(ks);
+        matrix[y][x] = new Fraction(1).div(opor);
 
         if (debugConf.debugRowCol) {
             matrixInst.log();
