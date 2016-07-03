@@ -220,7 +220,7 @@ export class Simplex {
             equationEx.push
                 .plus().x(leftValue)
                 .mul()
-                .word('_[').x(leftValue).word(']');
+                .word('b[').x(leftValue).word(']');
         });
         equationEx.push
             .plus()

@@ -57,7 +57,7 @@ function matrixToHtml(params, callback?: Function, className?) {
         for (var i = 0; i < head.length; i++) {
             headArr.push(<td key={i+1}>{"x" + (head[i])}</td>);
         }
-        headArr.push(<td key={i + 1}>_</td>);
+        headArr.push(<td key={i + 1}>b</td>);
 
         for (let i = 0; i < matrix.height; i++) {
             let row = [];
