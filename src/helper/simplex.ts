@@ -102,9 +102,13 @@ export class Simplex {
         if (status === false) {
             console.log('решение не допустимо');
         }
-        status = this.checkOptimalSolution();
-        if (status === false) {
+        const optimalSolution = this.checkOptimalSolution();
+        if (optimalSolution === false) {
             console.log('решение не оптимально');
+        }
+        if (this.isLastStep && optimalSolution) {
+            this.showResult();
+            return true;
         }
 
         let pos;
@@ -558,6 +562,7 @@ export class Simplex {
 
     /**
      * Проверка симплекс таблицы на допустимость
+     * ???
      */
     checkValidSolution() {
         const matr = this.matrix;
@@ -572,15 +577,16 @@ export class Simplex {
 
     /**
      * Проверка на оптимальность
+     * решение оптимально, если все числа в последней строке больше нуля
      */
     checkOptimalSolution() {
         const matr = this.matrix;
-        const row = matr.getRow(matr.height - 1);
-        return row.every((el, idx) => {
+        const lastRow = matr.getRow(matr.height - 1);
+        return lastRow.every((el, idx) => {
             if (idx === matr.height - 1) {
                 return true;
             }
-            return (el.compare(new Fraction(0)) > 0);
+            return ((el.compare(new Fraction(0))) > 0);
         })
     }
 
@@ -621,6 +627,8 @@ export class Simplex {
             }
         }
         equation.push.word(')');
+
+        this.debug.push({text: 'Ответ:'});
         this.debug.push({equation});
         let equation2 = new PrintEquation();
         equation2.push
