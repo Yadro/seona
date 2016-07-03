@@ -127,7 +127,9 @@ export class Simplex {
         if (this.isLastStep === true) {
             this.showResult();
             return true;
-        } else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize && this.isLastStep === false) {
+        } else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize
+            && this.isLastStep === false) {
+            // последний шаг
             this.isLastStep = true;
             let coeff = this.lastStepFindToPrintKnownCoeff();
             this.printKnownCoeff(coeff);
@@ -205,18 +207,16 @@ export class Simplex {
         // calc last coefficient
         let res = getLastItem(this.polynom);
 
+        // helper row
         let equationEx = new PrintEquation();
         equationEx.push
             .word('p')
             .equal();
         this.left.forEach((leftValue, rowIdx) => {
             equationEx.push
-                .plus()
-                .x(leftValue)
+                .plus().x(leftValue)
                 .mul()
-                .word('_[')
-                .x(leftValue)
-                .word(']');
+                .word('_[').x(leftValue).word(']');
         });
         equationEx.push
             .plus()
@@ -283,9 +283,7 @@ export class Simplex {
         for (let k in coeffs) {
             if (coeffs.hasOwnProperty(k)) {
                 let equation = new PrintEquation();
-                equation.push.x(k);
-                equation.push.sign(0);
-                equation.push.arr(coeffs[k].equation);
+                equation.push.x(k).equal().arr(coeffs[k].equation);
                 this.debug.push({equation});
             }
         }
@@ -302,7 +300,7 @@ export class Simplex {
             const id = idx + 1;
             equation.push.fraction(k);
             if (idx !== len) {
-                equation.push.sign(2).x(id).plus();
+                equation.push.mul().x(id).plus();
             }
         });
         return equation;
