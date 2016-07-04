@@ -2,7 +2,7 @@ import * as saveAs from 'filesaver';
 
 export function downloadFile(json) {
     let blob = new Blob([json], {type: "application/json;charset=utf-8"});
-    saveAs(blob, "export.json");
+    saveAs(blob, 'simplex-' + Date.now() + '.json');
 }
 
 export function uploadFile(callback, event) {
