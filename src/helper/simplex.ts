@@ -128,11 +128,11 @@ export class Simplex {
         this.oneStep(pos);
         this.pushLog(this.matrix.matrix, [], 'Пересчитываем таблицу:');
 
-        if (this.isLastStep === true) {
-            this.showResult();
-            return true;
-        } else if (this.matrix.height + this.matrix.width - 2 === this.originPolynomSize
-            && this.isLastStep === false) {
+        if (
+            !this.isLastStep
+            && this.matrix.height + this.matrix.width - 2 === this.originPolynomSize
+            && this.isLastStep === false
+        ) {
             // последний шаг
             this.isLastStep = true;
             let coeff = this.lastStepFindToPrintKnownCoeff();
